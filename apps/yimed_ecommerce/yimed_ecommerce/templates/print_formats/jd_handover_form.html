@@ -1,0 +1,43 @@
+<style>
+@page { size: A4 portrait; margin: 5mm; }
+.handover { font-family: "Microsoft YaHei", sans-serif; color: #111; font-size: 9pt; }
+.handover .banner { display: flex; align-items: center; justify-content: space-between; background: #d71920; color: #fff !important; font-size: 21pt; padding: 2mm 3mm; }
+.handover .banner > span { color: #fff !important; }
+.handover .jd-logo { background: #fff; color: #d71920; font-size: 17pt; font-weight: 700; padding: 1mm 3mm; }
+.handover .banner > .jd-logo { color: #d71920 !important; }
+.handover .section { background: #f47b20; color: #111; font-weight: 700; padding: 1.2mm 1mm; margin-top: 3mm; }
+.handover table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.handover th, .handover td { border: 0.35mm solid #e1251b; padding: 1.4mm 1mm; vertical-align: middle; word-break: break-all; }
+.handover th { font-weight: 500; background: #fff; }
+.handover .sign { height: 19mm; vertical-align: top; }
+.handover .footnote { font-size: 7pt; line-height: 1.35; margin-top: 2mm; }
+</style>
+<div class="handover">
+  <div class="banner"><span>到仓上门揽收交接单</span><span class="jd-logo">JD 京东物流</span></div>
+  <div class="section">1．任务信息</div>
+  <table>
+    <tr><th style="width:13%">客户名称*</th><td style="width:37%">{{ doc.company }}</td><th style="width:15%">预约单号*</th><td>{{ doc.appointment_no or "" }}</td></tr>
+    <tr><th>提货地址</th><td>{{ doc.pickup_address or "" }}</td><th>揽收任务号*</th><td>{{ doc.pickup_task_no or "" }}</td></tr>
+    <tr><th>客户联系人*</th><td>{{ doc.customer_contact or "" }}{% if doc.pickup_time %}（上门取货时间：{{ doc.pickup_time }}）{% endif %}</td><th>始发TC*</th><td>{{ doc.starting_tc or "" }}</td></tr>
+    <tr><th>客户电话*</th><td>{{ doc.customer_phone or "" }}</td><th>JD运输联系人*</th><td>{{ doc.jd_transport_contact or "" }} {{ doc.jd_transport_phone or "" }}</td></tr>
+  </table>
+
+  <div class="section">2．货物信息</div>
+  <table>
+    <thead><tr><th style="width:6%">序号</th><th style="width:24%">客户采购单号/JDV*</th><th style="width:8%">箱数*</th><th style="width:12%">目的城市*</th><th style="width:13%">外箱标识</th><th style="width:13%">提货说明</th><th style="width:10%">TC收货箱数*</th><th>TC收货说明</th></tr></thead>
+    <tbody>
+    {% for row in doc.purchase_orders %}
+      <tr><td class="text-center">{{ loop.index }}</td><td>{{ row.purchase_order }}</td><td>{{ row.carton_count }}</td><td>{{ row.destination_city or "" }}</td><td>{{ row.outer_carton_mark or "" }}</td><td>{{ row.pickup_notes or "" }}</td><td>{{ row.actual_received_cartons or "" }}</td><td>{{ row.receipt_notes or "" }}</td></tr>
+    {% endfor %}
+      <tr><td colspan="2" style="text-align:right;font-weight:700">提货总箱数：</td><td colspan="2">{{ doc.total_cartons }} 箱</td><td colspan="2" style="text-align:right;font-weight:700">TC收货总箱数：</td><td colspan="2">{% if doc.actual_received_cartons %}{{ doc.actual_received_cartons }} 箱{% endif %}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section">3．签字确认</div>
+  <table>
+    <tr><th>客户确认</th><th>揽收司机确认</th><th>TC收货确认</th></tr>
+    <tr><td class="sign">发货人签字：{{ doc.shipper_name or "" }}<br>发货人电话：{{ doc.shipper_phone or "" }}<br>签字日期时间：{{ doc.shipper_signed_at or "" }}</td><td class="sign">车牌号：{{ doc.vehicle_no or "" }}　车型：{{ doc.vehicle_type or "" }}<br>司机签字：{{ doc.driver_name or "" }}<br>签字日期时间：{{ doc.driver_signed_at or "" }}</td><td class="sign">收货人签字：{{ doc.tc_receiver_name or "" }}<br>联系方式：{{ doc.tc_contact or "" }}<br>签字日期时间：{{ doc.tc_signed_at or "" }}</td></tr>
+    <tr><td>客户备注：{{ doc.customer_notes or "" }}</td><td>司机备注：{{ doc.driver_notes or "" }}</td><td>TC备注：{{ doc.tc_notes or "" }}</td></tr>
+  </table>
+  <div class="footnote">本交接单用于上门揽收货物箱数及外包装状态确认。客户、司机与TC收货方应共同核对采购单号、目的城市、箱数及外包装情况。</div>
+</div>

@@ -1,0 +1,35 @@
+{
+ "actions": [],
+ "autoname": "format:EST-{#####}",
+ "creation": "2026-08-25 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["rule_name", "enabled", "company", "fee_item", "calculation_method", "rate", "scope_section", "scopes", "description"],
+ "fields": [
+  {"fieldname":"rule_name","fieldtype":"Data","in_list_view":1,"in_standard_filter":1,"label":"规则名称","reqd":1},
+  {"default":"1","fieldname":"enabled","fieldtype":"Check","in_list_view":1,"label":"启用"},
+  {"fieldname":"company","fieldtype":"Link","in_list_view":1,"in_standard_filter":1,"label":"公司","options":"Company","reqd":1},
+  {"fieldname":"fee_item","fieldtype":"Link","in_list_view":1,"in_standard_filter":1,"label":"费用项目","options":"Ecommerce Fee Item","reqd":1},
+  {"default":"按销售额比例","fieldname":"calculation_method","fieldtype":"Select","in_list_view":1,"label":"计费方式","options":"按销售额比例\n按订单数\n按件数\n固定金额","reqd":1},
+  {"description":"比例方式填百分数，例如 5 表示 5%；单价方式填金额。","fieldname":"rate","fieldtype":"Float","in_list_view":1,"label":"费率或单价","reqd":1},
+  {"fieldname":"scope_section","fieldtype":"Section Break","label":"适用范围"},
+  {"description":"可增加多行实现多选。店铺留空表示适用该渠道下全部店铺；整张表留空表示适用全部渠道和店铺。","fieldname":"scopes","fieldtype":"Table","label":"适用渠道及店铺（多选）","options":"Ecommerce Fee Estimate Scope"},
+  {"fieldname":"description","fieldtype":"Small Text","label":"说明"}
+ ],
+ "links": [],
+ "modified": "2026-08-25 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ecommerce Dashboard",
+ "name": "Ecommerce Fee Estimate Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"Accounts Manager","share":1,"write":1},
+  {"read":1,"report":1,"role":"Accounts User"},
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"System Manager","share":1,"write":1},
+  {"read":1,"report":1,"role":"Sales Manager"}
+ ],
+ "sort_field": "rule_name",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

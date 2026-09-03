@@ -1,0 +1,18 @@
+{
+ "actions": [],
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": ["product_listing", "ratio"],
+ "fields": [
+  {"fieldname":"product_listing","fieldtype":"Link","in_list_view":1,"label":"商品链接","options":"Ecommerce Product Listing","reqd":1},
+  {"description":"相对权重，无需合计为100。","fieldname":"ratio","fieldtype":"Float","in_list_view":1,"label":"固定比例","precision":"6","reqd":1}
+ ],
+ "modified": "2026-08-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ecommerce Dashboard",
+ "name": "Ecommerce Fee Allocation Ratio",
+ "owner": "Administrator",
+ "permissions": []
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<style>
+		@page { size: A4 landscape; }
+		.print-format {
+			page-size: A4;
+			page-width: 297mm;
+			page-height: 210mm;
+			orientation: Portrait;
+			margin-top: 8mm;
+			margin-bottom: 12mm;
+			margin-left: 8mm;
+			margin-right: 8mm;
+			font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+			font-size: 8.5pt;
+			color: #111;
+		}
+		* { box-sizing: border-box; }
+		body { margin: 0; }
+		h1 { margin: 0 0 3mm; text-align: center; font-size: 16pt; line-height: 1.2; }
+		.meta { display: table; width: 100%; margin-bottom: 2.5mm; font-size: 8.5pt; }
+		.meta-row { display: table-row; }
+		.meta-cell { display: table-cell; width: 50%; padding: 0.6mm 0; }
+		.meta-cell.right { text-align: right; }
+		table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+		thead { display: table-header-group; }
+		tr { page-break-inside: avoid; break-inside: avoid; }
+		th, td {
+			border: 0.2mm solid #333;
+			padding: 1.2mm 1mm;
+			line-height: 1.25;
+			vertical-align: middle;
+			word-break: break-word;
+			overflow-wrap: anywhere;
+		}
+		th { background: #ededed; font-weight: 600; text-align: center; }
+		td.numeric { text-align: right; white-space: nowrap; }
+		.empty { padding: 8mm; text-align: center; color: #666; }
+	</style>
+</head>
+<body>
+	<div class="print-format">
+		<h1>{{ title | e }}</h1>
+		<div class="meta">
+			<div class="meta-row">
+				<div class="meta-cell">公司：{{ (batch.company or "") | e }}</div>
+				<div class="meta-cell right">导入批次：{{ batch.name | e }}</div>
+			</div>
+			<div class="meta-row">
+				<div class="meta-cell">
+					{% if filters.purchase_order %}京东采购单：{{ filters.purchase_order | e }}{% endif %}
+					{% if filters.destination_city %}目的城市：{{ filters.destination_city | e }}{% endif %}
+				</div>
+				<div class="meta-cell right">打印时间：{{ printed_at | e }}</div>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				{% for column in columns %}<col style="width: {{ column.width_percent }}%">{% endfor %}
+			</colgroup>
+			<thead>
+				<tr>{% for column in columns %}<th>{{ column.label | e }}</th>{% endfor %}</tr>
+			</thead>
+			<tbody>
+				{% if rows %}
+					{% for row in rows %}
+					<tr>
+						{% for column in columns %}
+						<td{% if column.fieldtype in ("Float", "Currency", "Percent", "Int") %} class="numeric"{% endif %}>{{ row[column.fieldname] | e }}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				{% else %}
+					<tr><td class="empty" colspan="{{ columns | length }}">暂无数据</td></tr>
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

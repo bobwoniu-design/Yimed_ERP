@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "autoname": "JKSY-.#####",
+ "creation": "2026-08-14 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "connection",
+  "resource",
+  "method",
+  "status",
+  "trigger_type",
+  "started_at",
+  "finished_at",
+  "duration_seconds",
+  "request_from",
+  "request_to",
+  "cursor_start_at",
+  "cursor_end_at",
+  "last_modified_at",
+  "last_page_index",
+  "total_pulled",
+  "total_created",
+  "total_updated",
+  "total_skipped",
+  "duplicate_raw_count",
+  "total_failed",
+  "api_request_count",
+  "context_id",
+  "error_log"
+ ],
+ "fields": [
+  {
+   "fieldname": "connection",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "连接",
+   "options": "Jackyun Connection",
+   "reqd": 1
+  },
+  {
+   "fieldname": "resource",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "资源类型",
+   "options": "Company\nDepartment\nCategory\nSales Channel\nSKU\nProduct Bundle\nSales Order\nPurchase Order\nPurchase Receipt\nDelivery Note\nSales Return\nPurchase Return\nStock Transfer\nStock Movement\nStocktake\nBatch\nInventory\nSupplier\nCustomer\nOffline Customer\nWarehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Data",
+   "label": "方法名"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "状态",
+   "options": "进行中\n成功\n部分失败\n失败"
+  },
+  {
+   "default": "direct",
+   "fieldname": "trigger_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "触发方式",
+   "options": "scheduled\nmanual\ndirect",
+   "read_only": 1
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "label": "开始时间"
+  },
+  {
+   "fieldname": "finished_at",
+   "fieldtype": "Datetime",
+   "label": "结束时间"
+  },
+  {
+   "fieldname": "duration_seconds",
+   "fieldtype": "Float",
+   "label": "耗时（秒）",
+   "precision": "3",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_from",
+   "fieldtype": "Datetime",
+   "label": "请求起始时间",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_to",
+   "fieldtype": "Datetime",
+   "label": "请求截止时间",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cursor_start_at",
+   "fieldtype": "Datetime",
+   "label": "游标起点",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cursor_end_at",
+   "fieldtype": "Datetime",
+   "label": "游标终点",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_modified_at",
+   "fieldtype": "Datetime",
+   "label": "增量游标（时间）"
+  },
+  {
+   "fieldname": "last_page_index",
+   "fieldtype": "Int",
+   "label": "分页游标"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_pulled",
+   "fieldtype": "Int",
+   "label": "拉取记录数",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_created",
+   "fieldtype": "Int",
+   "label": "新建数"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_skipped",
+   "fieldtype": "Int",
+   "label": "业务跳过数",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "description": "内容哈希已存在成功原始记录；仍执行幂等更新，不等同于业务跳过",
+   "fieldname": "duplicate_raw_count",
+   "fieldtype": "Int",
+   "label": "重复原始快照数",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_updated",
+   "fieldtype": "Int",
+   "label": "更新数"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_failed",
+   "fieldtype": "Int",
+   "label": "失败数"
+  },
+  {
+   "default": "0",
+   "description": "适配器实际发起的逻辑API请求次数，不伪装为页数",
+   "fieldname": "api_request_count",
+   "fieldtype": "Int",
+   "label": "API请求次数",
+   "read_only": 1
+  },
+  {
+   "description": "最后一个成功API响应返回的contextId；接口未返回时留空",
+   "fieldname": "context_id",
+   "fieldtype": "Data",
+   "label": "最后Context ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_log",
+   "fieldtype": "Long Text",
+   "label": "错误日志"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-29 14:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Sync Log",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,94 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 20:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "folder",
+    "action",
+    "user",
+    "details",
+    "reference_section",
+    "reference_doctype",
+    "reference_name"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "label": "内容资产",
+      "read_only": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "folder",
+      "fieldtype": "Data",
+      "label": "文件夹",
+      "read_only": 1
+    },
+    {
+      "fieldname": "action",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "动作",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "user",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "操作人",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "details",
+      "fieldtype": "Long Text",
+      "label": "详情",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reference_section",
+      "fieldtype": "Section Break",
+      "label": "业务关联"
+    },
+    {
+      "fieldname": "reference_doctype",
+      "fieldtype": "Data",
+      "label": "关联类型",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reference_name",
+      "fieldtype": "Data",
+      "label": "关联记录",
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "modified": "2026-08-14 20:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Audit Log",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

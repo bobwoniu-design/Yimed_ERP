@@ -1,0 +1,35 @@
+{
+ "actions": [],
+ "autoname": "field:aftersale_no",
+ "creation": "2026-08-26 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["aftersale_no", "source_trade_no", "refund_amount", "pay_status", "pay_time", "refund_type", "channel", "goods_detail_json", "gmt_modified"],
+ "fields": [
+  {"fieldname":"aftersale_no","fieldtype":"Data","label":"售后单号","reqd":1,"unique":1,"in_list_view":1,"in_standard_filter":1,"read_only":1},
+  {"description":"原吉客云销售单 tradeNo；退货/退款归因到该订单日期。","fieldname":"source_trade_no","fieldtype":"Data","label":"来源销售单号","in_list_view":1,"in_standard_filter":1,"read_only":1},
+  {"fieldname":"refund_amount","fieldtype":"Currency","label":"退款金额","in_list_view":1,"options":"currency","read_only":1},
+  {"fieldname":"currency","fieldtype":"Link","hidden":1,"label":"币种","options":"Currency","read_only":1},
+  {"description":"2=已打款。未打款的不参与净销售扣减。","fieldname":"pay_status","fieldtype":"Int","label":"打款状态","read_only":1},
+  {"fieldname":"pay_time","fieldtype":"Datetime","label":"打款时间","in_list_view":1,"read_only":1},
+  {"fieldname":"refund_type","fieldtype":"Data","label":"退款类型","read_only":1},
+  {"fieldname":"channel","fieldtype":"Link","label":"销售渠道","options":"Jackyun Sales Channel","in_standard_filter":1,"read_only":1},
+  {"description":"售后商品明细 JSON（含 shareReturnFee/platGoodsId），供链接级退款归属。","fieldname":"goods_detail_json","fieldtype":"Long Text","label":"商品明细JSON","read_only":1},
+  {"fieldname":"gmt_modified","fieldtype":"Datetime","label":"吉客云修改时间","read_only":1}
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-08-26 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Aftersale Refund",
+ "owner": "Administrator",
+ "permissions": [
+  {"read":1,"report":1,"role":"Accounts Manager"},
+  {"create":1,"delete":1,"read":1,"report":1,"role":"System Manager","write":1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

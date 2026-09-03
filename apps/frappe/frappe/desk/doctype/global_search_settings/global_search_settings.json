@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "creation": "2019-09-03 16:08:21.333698",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "allowed_in_global_search"
+ ],
+ "fields": [
+  {
+   "fieldname": "allowed_in_global_search",
+   "fieldtype": "Table",
+   "label": "Search Priorities",
+   "options": "Global Search DocType"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-18 19:49:32.063572",
+ "modified_by": "Administrator",
+ "module": "Desk",
+ "name": "Global Search Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Desk User"
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

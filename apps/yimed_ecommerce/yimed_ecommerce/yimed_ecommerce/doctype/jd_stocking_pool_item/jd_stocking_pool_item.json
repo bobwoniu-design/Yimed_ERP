@@ -1,0 +1,30 @@
+{
+ "actions": [],
+ "autoname": "format:JD-STK-{YYYY}-{#####}",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["import_batch", "company", "status", "stock_item", "warehouse", "batch_no", "required_qty", "stocked_qty", "available_qty_snapshot", "shortage_qty", "shortage_reason", "confirmed_by", "confirmed_at"],
+ "fields": [
+  {"fieldname":"import_batch","fieldtype":"Link","label":"导入批次","options":"JD Purchase Import Batch","reqd":1,"in_standard_filter":1},
+  {"fieldname":"company","fieldtype":"Link","label":"公司","options":"Company","reqd":1},
+  {"default":"草稿","fieldname":"status","fieldtype":"Select","label":"状态","options":"草稿\n已备货\n短缺","reqd":1,"in_list_view":1},
+  {"fieldname":"stock_item","fieldtype":"Link","label":"实际库存物料","options":"Item","reqd":1,"in_list_view":1},
+  {"fieldname":"warehouse","fieldtype":"Link","label":"备货仓库","options":"Warehouse","reqd":1,"in_list_view":1},
+  {"fieldname":"batch_no","fieldtype":"Link","label":"批号","options":"Batch","in_list_view":1},
+  {"fieldname":"required_qty","fieldtype":"Float","label":"需求数量","read_only":1},
+  {"fieldname":"stocked_qty","fieldtype":"Float","label":"实际备货数量","reqd":1},
+  {"fieldname":"available_qty_snapshot","fieldtype":"Float","label":"确认时可用库存","read_only":1},
+  {"fieldname":"shortage_qty","fieldtype":"Float","label":"短缺数量","read_only":1},
+  {"fieldname":"shortage_reason","fieldtype":"Small Text","label":"短缺原因"},
+  {"fieldname":"confirmed_by","fieldtype":"Link","label":"确认人","options":"User","read_only":1},
+  {"fieldname":"confirmed_at","fieldtype":"Datetime","label":"确认时间","read_only":1}
+ ],
+ "module":"Yimed Ecommerce",
+ "name":"JD Stocking Pool Item",
+ "permissions":[
+  {"role":"Stock Manager","read":1,"write":1,"create":1,"delete":1,"report":1},
+  {"role":"Stock User","read":1,"write":1,"create":1,"report":1},
+  {"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1}
+ ],
+ "sort_field":"creation","sort_order":"DESC","track_changes":1
+}

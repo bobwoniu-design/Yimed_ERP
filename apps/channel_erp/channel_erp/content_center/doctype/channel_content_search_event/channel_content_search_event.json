@@ -1,0 +1,78 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-15 10:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "user",
+    "query_hash",
+    "query_text",
+    "result_count",
+    "duration_ms",
+    "filters_summary"
+  ],
+  "fields": [
+    {
+      "fieldname": "user",
+      "fieldtype": "Data",
+      "label": "用户",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "query_hash",
+      "fieldtype": "Data",
+      "label": "搜索词哈希",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "query_text",
+      "fieldtype": "Data",
+      "label": "搜索词（可选）",
+      "read_only": 1
+    },
+    {
+      "fieldname": "result_count",
+      "fieldtype": "Int",
+      "label": "结果数",
+      "read_only": 1
+    },
+    {
+      "fieldname": "duration_ms",
+      "fieldtype": "Int",
+      "label": "耗时（毫秒）",
+      "read_only": 1
+    },
+    {
+      "fieldname": "filters_summary",
+      "fieldtype": "Small Text",
+      "label": "筛选摘要 JSON",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-15 10:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Search Event",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

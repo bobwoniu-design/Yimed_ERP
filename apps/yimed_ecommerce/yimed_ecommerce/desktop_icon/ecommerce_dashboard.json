@@ -1,0 +1,20 @@
+{
+ "app":"yimed_ecommerce",
+ "creation":"2026-08-21 00:00:00.000000",
+ "docstatus":0,
+ "doctype":"Desktop Icon",
+ "hidden":0,
+ "icon":"chart",
+ "icon_type":"Link",
+ "idx":23,
+ "label":"Ecommerce Dashboard",
+ "link_to":"Ecommerce Dashboard",
+ "link_type":"Workspace Sidebar",
+ "modified":"2026-08-21 00:00:00.000000",
+ "modified_by":"Administrator",
+ "name":"Ecommerce Dashboard",
+ "owner":"Administrator",
+ "restrict_removal":0,
+ "roles":[{"role":"Sales Manager"},{"role":"Accounts User"},{"role":"Accounts Manager"},{"role":"System Manager"}],
+ "standard":1
+}

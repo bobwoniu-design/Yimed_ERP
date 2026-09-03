@@ -1,0 +1,86 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-15 10:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "folder",
+    "version",
+    "quality_score",
+    "issue_count",
+    "issues",
+    "evaluated_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "label": "内容资产",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "folder",
+      "fieldtype": "Data",
+      "label": "文件夹",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "version",
+      "fieldtype": "Data",
+      "label": "版本快照",
+      "read_only": 1
+    },
+    {
+      "fieldname": "quality_score",
+      "fieldtype": "Int",
+      "label": "质量评分",
+      "read_only": 1
+    },
+    {
+      "fieldname": "issue_count",
+      "fieldtype": "Int",
+      "label": "问题数",
+      "read_only": 1
+    },
+    {
+      "fieldname": "issues",
+      "fieldtype": "Long Text",
+      "label": "问题清单 JSON",
+      "read_only": 1
+    },
+    {
+      "fieldname": "evaluated_at",
+      "fieldtype": "Datetime",
+      "label": "评估时间",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-15 10:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Quality Metric",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "quality_score",
+  "sort_order": "ASC",
+  "states": [],
+  "track_changes": 0
+}

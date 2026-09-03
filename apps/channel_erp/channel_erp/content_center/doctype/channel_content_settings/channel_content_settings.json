@@ -1,0 +1,245 @@
+{
+  "actions": [],
+  "creation": "2026-08-14 17:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "recycle_retention_days",
+    "max_file_size_mb",
+    "detect_duplicate_files",
+    "optional_feature_section",
+    "enable_approval_workflow",
+    "enable_borrowing",
+    "enable_responsible_governance",
+    "expiry_reminder_section",
+    "enable_expiry_reminders",
+    "expiry_reminder_days",
+    "remind_after_expiry",
+    "notify_responsible_user",
+    "expiry_admin_users",
+    "expiry_admin_role",
+    "content_insight_section",
+    "enable_content_insights",
+    "insight_min_confidence",
+    "insight_keyword_limit",
+    "insight_summary_sentences",
+    "insight_suggestion_limit",
+    "search_analytics_section",
+    "store_search_query_text",
+    "search_event_retention_days",
+    "content_stale_days",
+    "workflow_reminder_section",
+    "enable_workflow_reminders",
+    "pending_review_reminder_days",
+    "borrow_expiry_reminder_days"
+  ],
+  "fields": [
+    {
+      "default": "30",
+      "description": "超过保留期限的回收站文件可由管理员彻底清理",
+      "fieldname": "recycle_retention_days",
+      "fieldtype": "Int",
+      "label": "回收站保留天数",
+      "reqd": 1
+    },
+    {
+      "default": "100",
+      "fieldname": "max_file_size_mb",
+      "fieldtype": "Int",
+      "label": "单文件大小上限（MB）",
+      "reqd": 1
+    },
+    {
+      "default": "1",
+      "fieldname": "detect_duplicate_files",
+      "fieldtype": "Check",
+      "label": "检测重复文件"
+    },
+    {
+      "fieldname": "optional_feature_section",
+      "fieldtype": "Section Break",
+      "label": "可选业务功能"
+    },
+    {
+      "default": "0",
+      "description": "开启后显示待审批入口及文件提交、批准、驳回和取消发布操作",
+      "fieldname": "enable_approval_workflow",
+      "fieldtype": "Check",
+      "label": "启用文件发布审批"
+    },
+    {
+      "default": "0",
+      "description": "开启后显示授权给我、借阅审批及文件借阅授权操作",
+      "fieldname": "enable_borrowing",
+      "fieldtype": "Check",
+      "label": "启用文件借阅授权"
+    },
+    {
+      "default": "0",
+      "description": "开启后显示无人负责入口，并将未设置负责人计入内容质量问题",
+      "fieldname": "enable_responsible_governance",
+      "fieldtype": "Check",
+      "label": "启用负责人治理"
+    },
+    {
+      "fieldname": "expiry_reminder_section",
+      "fieldtype": "Section Break",
+      "label": "文件到期提醒"
+    },
+    {
+      "default": "1",
+      "fieldname": "enable_expiry_reminders",
+      "fieldtype": "Check",
+      "label": "启用到期提醒"
+    },
+    {
+      "default": "30,7,1",
+      "description": "使用逗号分隔，例如 30,7,1 表示到期前 30 天、7 天和 1 天提醒",
+      "fieldname": "expiry_reminder_days",
+      "fieldtype": "Data",
+      "label": "提前提醒天数",
+      "mandatory_depends_on": "eval:doc.enable_expiry_reminders"
+    },
+    {
+      "default": "1",
+      "description": "文件过期后每天提醒一次，直至修改到期日、移入回收站或关闭提醒",
+      "fieldname": "remind_after_expiry",
+      "fieldtype": "Check",
+      "label": "到期后继续提醒"
+    },
+    {
+      "default": "1",
+      "fieldname": "notify_responsible_user",
+      "fieldtype": "Check",
+      "label": "通知文件责任人"
+    },
+    {
+      "description": "填写启用用户的账号或邮箱，多个收件人使用逗号或换行分隔",
+      "fieldname": "expiry_admin_users",
+      "fieldtype": "Small Text",
+      "label": "管理员收件人"
+    },
+    {
+      "default": "Content Center Manager",
+      "description": "该角色下的所有启用用户都将收到提醒",
+      "fieldname": "expiry_admin_role",
+      "fieldtype": "Link",
+      "label": "管理员收件角色",
+      "options": "Role"
+    },
+    {
+      "fieldname": "content_insight_section",
+      "fieldtype": "Section Break",
+      "label": "本地内容洞察"
+    },
+    {
+      "default": "1",
+      "description": "仅使用本机全文索引进行确定性分析，不调用外部 AI 服务",
+      "fieldname": "enable_content_insights",
+      "fieldtype": "Check",
+      "label": "启用本地内容洞察"
+    },
+    {
+      "default": "0.8",
+      "description": "仅生成达到此置信度的标签和业务关联建议",
+      "fieldname": "insight_min_confidence",
+      "fieldtype": "Float",
+      "label": "建议最低置信度"
+    },
+    {
+      "default": "12",
+      "fieldname": "insight_keyword_limit",
+      "fieldtype": "Int",
+      "label": "关键词数量上限"
+    },
+    {
+      "default": "3",
+      "fieldname": "insight_summary_sentences",
+      "fieldtype": "Int",
+      "label": "摘要句数上限"
+    },
+    {
+      "default": "10",
+      "fieldname": "insight_suggestion_limit",
+      "fieldtype": "Int",
+      "label": "建议数量上限"
+    },
+    {
+      "fieldname": "search_analytics_section",
+      "fieldtype": "Section Break",
+      "label": "知识质量与搜索分析"
+    },
+    {
+      "default": "0",
+      "description": "默认关闭。开启后仅保存最多 200 字符的原始搜索词，用于热门查询分析",
+      "fieldname": "store_search_query_text",
+      "fieldtype": "Check",
+      "label": "保存原始搜索词"
+    },
+    {
+      "default": "90",
+      "fieldname": "search_event_retention_days",
+      "fieldtype": "Int",
+      "label": "搜索事件保留天数"
+    },
+    {
+      "default": "180",
+      "description": "超过此天数未访问且文件本身也未在此期间创建时标记为长期未使用",
+      "fieldname": "content_stale_days",
+      "fieldtype": "Int",
+      "label": "长期未使用天数"
+    },
+    {
+      "fieldname": "workflow_reminder_section",
+      "fieldtype": "Section Break",
+      "label": "审批与借阅提醒"
+    },
+    {
+      "default": "0",
+      "description": "仅在对应的审批或借阅功能开启时发送提醒",
+      "fieldname": "enable_workflow_reminders",
+      "fieldtype": "Check",
+      "label": "启用审批与借阅提醒",
+      "depends_on": "eval:doc.enable_approval_workflow || doc.enable_borrowing"
+    },
+    {
+      "default": "3",
+      "fieldname": "pending_review_reminder_days",
+      "fieldtype": "Int",
+      "label": "待审批超时提醒天数",
+      "depends_on": "eval:doc.enable_workflow_reminders && doc.enable_approval_workflow"
+    },
+    {
+      "default": "3",
+      "fieldname": "borrow_expiry_reminder_days",
+      "fieldtype": "Int",
+      "label": "借阅到期提前提醒天数",
+      "depends_on": "eval:doc.enable_workflow_reminders && doc.enable_borrowing"
+    }
+  ],
+  "issingle": 1,
+  "links": [],
+  "modified": "2026-08-14 17:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Settings",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "read": 1,
+      "role": "System Manager",
+      "write": 1
+    },
+    {
+      "create": 1,
+      "read": 1,
+      "role": "Content Center Manager",
+      "write": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}

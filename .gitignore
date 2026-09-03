@@ -1,0 +1,39 @@
+# Operating-system and editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Python and Node generated files
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+node_modules/
+
+# Bench runtime files must be recreated on the target computer
+env/
+logs/
+sites/
+config/pids/
+*.pid
+
+# Site data and credentials must never be committed
+site_config.json
+common_site_config.json
+# Bench-generated database backups (framework schema .sql files remain tracked)
+*-database.sql
+*-database.sql.gz
+database.sql
+database.sql.gz
+*-files.tar
+*-files.tar.gz
+*-private-files.tar
+*-private-files.tar.gz
+*.pem
+*.p12
+*.pfx
+
+# Local migration staging
+migration-data/
+backups/

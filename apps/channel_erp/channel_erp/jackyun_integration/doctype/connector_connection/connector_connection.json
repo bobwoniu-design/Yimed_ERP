@@ -1,0 +1,27 @@
+{
+ "doctype": "DocType",
+ "name": "Connector Connection",
+ "module": "Jackyun Integration",
+ "autoname": "field:connection_name",
+ "engine": "InnoDB",
+ "track_changes": 1,
+ "title_field": "connection_name",
+ "field_order": ["connection_name", "enabled", "platform", "adapter_key", "credential_section", "credential_doctype", "credential_name", "source_marker", "capability_section", "allow_create", "allow_update", "allow_cancel", "allow_audit", "allow_query"],
+ "fields": [
+  {"fieldname": "connection_name", "label": "连接名称", "fieldtype": "Data", "reqd": 1, "unique": 1, "in_list_view": 1},
+  {"fieldname": "enabled", "label": "启用", "fieldtype": "Check", "default": "1", "in_list_view": 1},
+  {"fieldname": "platform", "label": "平台标识", "fieldtype": "Data", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "adapter_key", "label": "适配器标识", "fieldtype": "Data", "description": "适配器注册表中的稳定标识；为空时使用平台标识。"},
+  {"fieldname": "credential_section", "label": "凭据与来源", "fieldtype": "Section Break"},
+  {"fieldname": "credential_doctype", "label": "凭据 DocType", "fieldtype": "Link", "options": "DocType", "description": "复用现有平台连接配置；本记录不复制密钥。"},
+  {"fieldname": "credential_name", "label": "凭据记录", "fieldtype": "Dynamic Link", "options": "credential_doctype"},
+  {"fieldname": "source_marker", "label": "本系统来源标识", "fieldtype": "Data", "default": "erpnext", "description": "用于识别本系统发出的事件并阻止同步回环。"},
+  {"fieldname": "capability_section", "label": "允许的写入与查询能力", "fieldtype": "Section Break", "description": "这里按操作控制接口权限；平台总开关和测试模式请在对应的平台连接配置中设置。"},
+  {"fieldname": "allow_create", "label": "允许创建", "fieldtype": "Check", "default": "0"},
+  {"fieldname": "allow_update", "label": "允许更新", "fieldtype": "Check", "default": "0"},
+  {"fieldname": "allow_cancel", "label": "允许取消", "fieldtype": "Check", "default": "0"},
+  {"fieldname": "allow_audit", "label": "允许审核", "fieldtype": "Check", "default": "0"},
+  {"fieldname": "allow_query", "label": "允许查询", "fieldtype": "Check", "default": "0"}
+ ],
+ "permissions": [{"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1}]
+}

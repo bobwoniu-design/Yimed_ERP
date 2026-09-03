@@ -1,0 +1,127 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 13:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "folder",
+    "subject_type",
+    "role",
+    "user",
+    "permissions_section",
+    "can_view",
+    "can_upload",
+    "can_download",
+    "can_create_folder",
+    "can_move",
+    "can_delete",
+    "can_manage"
+  ],
+  "fields": [
+    {
+      "fieldname": "folder",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "文件夹",
+      "options": "Channel Content Folder",
+      "reqd": 1
+    },
+    {
+      "fieldname": "subject_type",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "授权对象类型",
+      "options": "Role\nUser",
+      "reqd": 1
+    },
+    {
+      "depends_on": "eval:doc.subject_type=='Role'",
+      "fieldname": "role",
+      "fieldtype": "Link",
+      "label": "角色",
+      "options": "Role"
+    },
+    {
+      "depends_on": "eval:doc.subject_type=='User'",
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "label": "用户",
+      "options": "User"
+    },
+    {
+      "fieldname": "permissions_section",
+      "fieldtype": "Section Break",
+      "label": "权限"
+    },
+    {
+      "default": "1",
+      "fieldname": "can_view",
+      "fieldtype": "Check",
+      "label": "查看"
+    },
+    {
+      "default": "0",
+      "fieldname": "can_upload",
+      "fieldtype": "Check",
+      "label": "上传"
+    },
+    {
+      "default": "1",
+      "fieldname": "can_download",
+      "fieldtype": "Check",
+      "label": "下载"
+    },
+    {
+      "default": "0",
+      "fieldname": "can_create_folder",
+      "fieldtype": "Check",
+      "label": "新建文件夹"
+    },
+    {
+      "default": "0",
+      "fieldname": "can_move",
+      "fieldtype": "Check",
+      "label": "移动"
+    },
+    {
+      "default": "0",
+      "fieldname": "can_delete",
+      "fieldtype": "Check",
+      "label": "删除"
+    },
+    {
+      "default": "0",
+      "fieldname": "can_manage",
+      "fieldtype": "Check",
+      "label": "管理权限"
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-14 13:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Folder Access",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "read": 1,
+      "role": "System Manager",
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "read": 1,
+      "role": "Content Center Manager",
+      "write": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}

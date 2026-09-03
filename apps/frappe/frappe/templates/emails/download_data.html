@@ -1,0 +1,9 @@
+<p>{{_("Dear {0}").format(user_name)}},</p>
+<p>{{_("We have received a request from you to download your {0} data associated with: {1}").format(host_name, user)}}.</p>
+<p>{{_("Click on the link below to download your data")}}.</p>
+<p>
+	<a href="{{ link }}" rel="nofollow" class="btn btn-primary">{{ _("Download Data") }}</a>
+</p>
+<p class="text-muted text-small">
+	{{_("You can also copy-paste this")}} <a href="{{ link }}">{{_("Download Link")}}</a> {{_("to your browser")}}
+</p>

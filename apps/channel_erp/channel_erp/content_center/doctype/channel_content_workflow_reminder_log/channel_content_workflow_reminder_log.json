@@ -1,0 +1,97 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-15 13:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "reminder_key",
+    "reminder_type",
+    "reference_doctype",
+    "reference_name",
+    "recipient",
+    "event_date",
+    "notification_log",
+    "sent_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "reminder_key",
+      "fieldtype": "Data",
+      "label": "幂等键",
+      "read_only": 1,
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "reminder_type",
+      "fieldtype": "Data",
+      "label": "提醒类型",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "reference_doctype",
+      "fieldtype": "Data",
+      "label": "引用类型",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "reference_name",
+      "fieldtype": "Data",
+      "label": "引用记录",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "recipient",
+      "fieldtype": "Data",
+      "label": "接收人",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "event_date",
+      "fieldtype": "Date",
+      "label": "事件日期",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "notification_log",
+      "fieldtype": "Data",
+      "label": "通知日志",
+      "read_only": 1
+    },
+    {
+      "fieldname": "sent_at",
+      "fieldtype": "Datetime",
+      "label": "发送时间",
+      "read_only": 1,
+      "reqd": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-15 13:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Workflow Reminder Log",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

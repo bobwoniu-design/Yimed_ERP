@@ -1,0 +1,35 @@
+<style>
+	@page { size: A4 landscape; margin: 8mm; }
+	.jd-report { font-size: 9px; color: #111; }
+	.jd-report h2 { margin: 0 0 4px; text-align: center; font-size: 18px; }
+	.jd-report .meta { margin-bottom: 8px; display: flex; justify-content: space-between; }
+	.jd-report table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+	.jd-report th, .jd-report td { border: 1px solid #333; padding: 4px; word-break: break-all; }
+	.jd-report th { background: #f2f2f2; font-weight: 600; }
+	.jd-report .num { text-align: right; }
+</style>
+<div class="jd-report">
+	<h2>{%= __("商品备货汇总表") %}</h2>
+	<div class="meta">
+		<span>{%= __("导入批次") %}：{%= filters.import_batch || "" %}</span>
+		<span>{%= __("打印时间") %}：{%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</span>
+	</div>
+	<table>
+		<thead><tr>
+			<th>{%= __("京东SKU") %}</th><th>{%= __("京东商品名称") %}</th>
+			<th>{%= __("平台商品编码") %}</th><th>{%= __("采购数量") %}</th><th>{%= __("采购单位") %}</th>
+			<th>{%= __("组合装") %}</th><th>{%= __("实际备货物料") %}</th><th>{%= __("备货物料名称") %}</th>
+			<th>{%= __("备货数量") %}</th><th>{%= __("库存单位") %}</th>
+		</tr></thead>
+		<tbody>
+		{% for (var i = 0; i < data.length; i++) { %}
+			<tr>
+				<td>{%= data[i].jd_sku || "" %}</td><td>{%= data[i].jd_item_name || "" %}</td>
+				<td>{%= data[i].platform_item || "" %}</td><td class="num">{%= data[i].purchase_qty || 0 %}</td><td>{%= data[i].purchase_uom || "" %}</td>
+				<td>{%= data[i].is_bundle || "" %}</td><td>{%= data[i].stock_item || "" %}</td><td>{%= data[i].stock_item_name || "" %}</td>
+				<td class="num">{%= data[i].stock_qty || 0 %}</td><td>{%= data[i].stock_uom || "" %}</td>
+			</tr>
+		{% } %}
+		</tbody>
+	</table>
+</div>

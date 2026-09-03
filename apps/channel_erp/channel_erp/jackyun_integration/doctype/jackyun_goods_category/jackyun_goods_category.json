@@ -1,0 +1,40 @@
+{
+ "actions": [],
+ "autoname": "field:category_id",
+ "creation": "2026-08-14 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "category_id",
+  "category_code",
+  "category_name",
+  "parent_category",
+  "parent_external_id",
+  "full_name",
+  "disabled",
+  "deleted"
+ ],
+ "fields": [
+  {"fieldname":"category_id","fieldtype":"Data","label":"吉客云分类ID","reqd":1,"unique":1},
+  {"fieldname":"category_code","fieldtype":"Data","in_list_view":1,"label":"分类编码"},
+  {"fieldname":"category_name","fieldtype":"Data","in_list_view":1,"label":"分类名称","reqd":1},
+  {"fieldname":"parent_category","fieldtype":"Link","label":"父分类","options":"Jackyun Goods Category"},
+  {"fieldname":"parent_external_id","fieldtype":"Data","label":"父分类外部ID","read_only":1},
+  {"fieldname":"full_name","fieldtype":"Data","label":"分类全路径"},
+  {"default":"0","fieldname":"disabled","fieldtype":"Check","in_list_view":1,"label":"已停用"},
+  {"default":"0","fieldname":"deleted","fieldtype":"Check","label":"已删除"}
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-14 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Goods Category",
+ "owner": "Administrator",
+ "permissions": [{"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"System Manager","share":1,"write":1}],
+ "sort_field": "category_code",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "category_name",
+ "track_changes": 1
+}

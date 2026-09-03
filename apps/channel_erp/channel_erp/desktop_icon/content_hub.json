@@ -1,0 +1,30 @@
+{
+ "app": "channel_erp",
+ "creation": "2026-08-14 15:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "folder",
+ "icon_type": "Link",
+ "idx": 21,
+ "label": "Content Hub",
+ "link_to": "Content Hub",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-08-14 15:20:00.000000",
+ "modified_by": "Administrator",
+ "name": "Content Hub",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Content Center Manager"
+  },
+  {
+   "role": "Content Center User"
+  }
+ ],
+ "standard": 1
+}

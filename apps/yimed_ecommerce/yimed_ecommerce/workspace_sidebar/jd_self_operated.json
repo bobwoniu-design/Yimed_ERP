@@ -1,0 +1,86 @@
+{
+ "app": "yimed_ecommerce",
+ "creation": "2026-08-19 00:00:00",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "stock",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "home",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Home",
+   "link_to": "JD Self Operated",
+   "link_type": "Workspace",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "shopping-cart",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "JD Purchase Workbench",
+   "link_to": "JD Purchase Import Batch",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "\u91c7\u8d2d\u8ba2\u5355",
+   "link_to": "JD Purchase Order",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "link",
+   "indent": 1,
+   "keep_closed": 0,
+   "label": "Master Data",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "SKU Mapping",
+   "link_to": "JD SKU Mapping",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "JD Self Operated Settings",
+   "link_to": "JD Self Operated Settings",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-30 11:26:52.706415",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "JD Self Operated",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "JD Self Operated"
+}

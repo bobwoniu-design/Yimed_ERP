@@ -1,0 +1,24 @@
+{
+ "doctype": "DocType", "name": "Integration Reconciliation Run", "module": "Jackyun Integration",
+ "autoname": "INTR-.YYYY.-.#####", "engine": "InnoDB", "track_changes": 1,
+ "title_field": "name", "sort_field": "started_at", "sort_order": "DESC",
+ "field_order": ["run_type","status","connection","company","from_date","to_date","sales_channel","started_at","finished_at","source_count","mapped_count","erp_count","difference_count","warning_count","details"],
+ "fields": [
+  {"fieldname":"run_type","label":"运行类型","fieldtype":"Select","options":"数据核对\n同步预演\n每日一致性","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"status","label":"状态","fieldtype":"Select","options":"进行中\n通过\n有差异\n失败","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"connection","label":"连接","fieldtype":"Link","options":"Jackyun Connection","in_list_view":1},
+  {"fieldname":"company","label":"公司","fieldtype":"Link","options":"Company","in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"from_date","label":"开始日期","fieldtype":"Date","in_list_view":1},
+  {"fieldname":"to_date","label":"结束日期","fieldtype":"Date","in_list_view":1},
+  {"fieldname":"sales_channel","label":"销售渠道","fieldtype":"Link","options":"Jackyun Sales Channel","in_standard_filter":1},
+  {"fieldname":"started_at","label":"开始时间","fieldtype":"Datetime","read_only":1},
+  {"fieldname":"finished_at","label":"完成时间","fieldtype":"Datetime","read_only":1},
+  {"fieldname":"source_count","label":"来源记录数","fieldtype":"Int","read_only":1},
+  {"fieldname":"mapped_count","label":"已映射数","fieldtype":"Int","read_only":1},
+  {"fieldname":"erp_count","label":"ERP记录数","fieldtype":"Int","read_only":1},
+  {"fieldname":"difference_count","label":"差异数","fieldtype":"Int","read_only":1,"in_list_view":1},
+  {"fieldname":"warning_count","label":"告警数","fieldtype":"Int","read_only":1},
+  {"fieldname":"details","label":"核对明细（JSON）","fieldtype":"Code","options":"JSON","read_only":1}
+ ],
+ "permissions": [{"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1}]
+}

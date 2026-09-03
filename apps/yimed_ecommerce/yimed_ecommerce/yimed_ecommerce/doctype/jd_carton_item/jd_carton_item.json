@@ -1,0 +1,32 @@
+{
+ "actions": [],
+ "creation": "2026-08-19 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["jd_sku", "platform_item", "stock_item", "stock_item_name", "qty", "uom", "batch_no", "manufacturing_date", "expiry_date", "remaining_shelf_life_percent", "shelf_life_status"],
+ "fields": [
+  {"fieldname": "jd_sku", "fieldtype": "Data", "in_list_view": 1, "label": "京东SKU", "reqd": 1},
+  {"fieldname": "platform_item", "fieldtype": "Link", "label": "平台商品编码", "options": "Item", "read_only": 1, "reqd": 1},
+  {"fieldname": "stock_item", "fieldtype": "Link", "in_list_view": 1, "label": "实际库存物料", "options": "Item", "read_only": 1, "reqd": 1},
+  {"fetch_from": "stock_item.item_name", "fieldname": "stock_item_name", "fieldtype": "Data", "label": "库存物料名称", "read_only": 1},
+  {"fieldname": "qty", "fieldtype": "Float", "in_list_view": 1, "label": "数量", "reqd": 1},
+  {"fieldname": "uom", "fieldtype": "Link", "in_list_view": 1, "label": "单位", "options": "UOM", "read_only": 1},
+  {"fieldname": "batch_no", "fieldtype": "Link", "in_list_view": 1, "label": "批号", "options": "Batch"},
+  {"fieldname": "manufacturing_date", "fieldtype": "Date", "label": "生产日期", "read_only": 1},
+  {"fieldname": "expiry_date", "fieldtype": "Date", "in_list_view": 1, "label": "有效期", "read_only": 1},
+  {"fieldname": "remaining_shelf_life_percent", "fieldtype": "Percent", "label": "剩余有效期比例", "read_only": 1},
+  {"fieldname": "shelf_life_status", "fieldtype": "Select", "label": "有效期状态", "options": "无需校验\n符合\n临期预警\n不符合", "read_only": 1}
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "JD Carton Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

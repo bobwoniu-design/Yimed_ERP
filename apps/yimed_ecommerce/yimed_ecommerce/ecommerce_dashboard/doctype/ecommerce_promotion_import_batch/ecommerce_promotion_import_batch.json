@@ -1,0 +1,207 @@
+{
+ "actions": [],
+ "autoname": "format:PROMO-IMP-{YYYY}-{#####}",
+ "creation": "2026-08-21 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "import_file",
+  "sales_channel",
+  "company",
+  "report_type",
+  "status",
+  "result_section",
+  "imported_at",
+  "imported_by",
+  "column_break_result",
+  "total_rows",
+  "success_count",
+  "failed_count",
+  "matched_count",
+  "unmatched_count",
+  "total_amount",
+  "error_log"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "公司",
+   "options": "Company",
+   "reqd": 1,
+   "read_only": 1,
+   "description": "由销售渠道带出。"
+  },
+  {
+   "description": "正式日常数据源为天猫商品推广报表；计划推广报表仅用于对账。",
+   "fieldname": "import_file",
+   "fieldtype": "Attach",
+   "label": "天猫商品推广报表",
+   "reqd": 1
+  },
+  {
+   "description": "报表归属的销售渠道（含公司信息）；拼多多/阿里健康等无店铺列的报表按此渠道入账，天猫报表也用于校验店铺。",
+   "fieldname": "sales_channel",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "销售渠道",
+   "options": "Jackyun Sales Channel",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "report_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "报表类型",
+   "read_only": 1
+  },
+  {
+   "default": "待导入",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "状态",
+   "options": "待导入\n导入中\n导入成功\n部分失败\n导入失败",
+   "read_only": 1
+  },
+  {
+   "fieldname": "result_section",
+   "fieldtype": "Section Break",
+   "label": "导入结果"
+  },
+  {
+   "fieldname": "imported_at",
+   "fieldtype": "Datetime",
+   "label": "导入时间",
+   "read_only": 1
+  },
+  {
+   "fieldname": "imported_by",
+   "fieldtype": "Link",
+   "label": "导入人",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_result",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_rows",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "总行数",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "success_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "成功",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "failed_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "失败",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "matched_count",
+   "fieldtype": "Int",
+   "label": "已匹配",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "unmatched_count",
+   "fieldtype": "Int",
+   "label": "待匹配",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "推广费合计",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_log",
+   "fieldtype": "Long Text",
+   "label": "错误日志",
+   "read_only": 1
+  }
+ ],
+ "links": [
+  {
+   "link_doctype": "Ecommerce Promotion Performance",
+   "link_fieldname": "import_batch"
+  },
+  {
+   "link_doctype": "Ecommerce Promotion Expense",
+   "link_fieldname": "import_batch"
+  }
+ ],
+ "modified": "2026-08-21 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ecommerce Dashboard",
+ "name": "Ecommerce Promotion Import Batch",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

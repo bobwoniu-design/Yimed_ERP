@@ -1,0 +1,31 @@
+{
+ "actions": [],
+ "creation": "2026-08-19 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["jd_sku", "jd_item_name", "platform_item", "platform_item_name", "purchase_qty", "purchase_uom", "received_qty", "purchase_price", "purchase_amount", "mapping_status"],
+ "fields": [
+  {"fieldname": "jd_sku", "fieldtype": "Data", "in_list_view": 1, "label": "京东SKU", "reqd": 1},
+  {"fieldname": "jd_item_name", "fieldtype": "Data", "in_list_view": 1, "label": "京东商品名称"},
+  {"fieldname": "platform_item", "fieldtype": "Link", "in_list_view": 1, "label": "平台商品编码", "options": "Item", "read_only": 1},
+  {"fetch_from": "platform_item.item_name", "fieldname": "platform_item_name", "fieldtype": "Data", "label": "平台商品名称", "read_only": 1},
+  {"fieldname": "purchase_qty", "fieldtype": "Float", "in_list_view": 1, "label": "采购数量", "reqd": 1},
+  {"fieldname": "purchase_uom", "fieldtype": "Link", "in_list_view": 1, "label": "采购单位", "options": "UOM"},
+  {"default": "0", "fieldname": "received_qty", "fieldtype": "Float", "label": "实收数量"},
+  {"fieldname": "purchase_price", "fieldtype": "Currency", "label": "采购价格"},
+  {"fieldname": "purchase_amount", "fieldtype": "Currency", "label": "采购金额", "read_only": 1},
+  {"default": "未映射", "fieldname": "mapping_status", "fieldtype": "Select", "in_list_view": 1, "label": "映射状态", "options": "已映射\n未映射", "read_only": 1}
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "JD Purchase Order Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

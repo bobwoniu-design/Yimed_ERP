@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "autoname": "field:refund_order_no",
+ "creation": "2026-08-26 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "refund_order_no",
+  "trade_type",
+  "refund_date",
+  "amount",
+  "currency",
+  "trade_status",
+  "channel",
+  "company_name",
+  "gmt_modified",
+  "refund_lines_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "refund_order_no",
+   "fieldtype": "Data",
+   "label": "退款单号",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "description": "吉客云负数销售单 tradeNo（订单类型=售后退货/仅退款）"
+  },
+  {
+   "description": "8=售后退货类负数单、12=其他负数单。",
+   "fieldname": "trade_type",
+   "fieldtype": "Int",
+   "label": "订单类型",
+   "read_only": 1
+  },
+  {
+   "description": "退款单自己的下单时间；销售退货按此日期归集（吉客云店铺利润表口径）。",
+   "fieldname": "refund_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "退款日期",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "退款金额",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "币种",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "description": "已取消的退款单不参与销售退货统计。",
+   "fieldname": "trade_status",
+   "fieldtype": "Int",
+   "label": "订单状态",
+   "read_only": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "销售渠道",
+   "options": "Jackyun Sales Channel",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "公司",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gmt_modified",
+   "fieldtype": "Datetime",
+   "label": "吉客云修改时间",
+   "read_only": 1
+  },
+  {
+   "description": "退款单商品明细 JSON（含 platGoodsId/platSkuId/金额），供链接级退款归属。",
+   "fieldname": "refund_lines_json",
+   "fieldtype": "Long Text",
+   "label": "商品明细JSON",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-08-26 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Refund Order",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "refund_date",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

@@ -1,0 +1,30 @@
+{
+ "app": "yimed_ecommerce",
+ "creation": "2026-08-19 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "stock",
+ "icon_type": "Link",
+ "idx": 22,
+ "label": "JD Self Operated",
+ "link_to": "JD Self Operated",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "JD Self Operated",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "standard": 1
+}

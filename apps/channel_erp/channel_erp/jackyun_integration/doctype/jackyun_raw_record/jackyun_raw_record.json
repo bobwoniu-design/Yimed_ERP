@@ -1,0 +1,145 @@
+{
+ "actions": [],
+ "autoname": "JKRAW-.#####",
+ "creation": "2026-08-14 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sync_log",
+  "resource",
+  "external_id",
+  "raw_data",
+  "content_hash",
+  "processed",
+  "processed_at",
+  "processing_status",
+  "error_message",
+  "failure_category",
+  "retryable",
+  "handling_suggestion",
+  "retry_count",
+  "last_retry_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "sync_log",
+   "fieldtype": "Link",
+   "label": "同步日志",
+   "options": "Jackyun Sync Log",
+   "reqd": 1
+  },
+  {
+   "fieldname": "resource",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "资源类型",
+   "options": "Company\nDepartment\nCategory\nSales Channel\nSKU\nProduct Bundle\nSales Order\nPurchase Order\nPurchase Receipt\nDelivery Note\nSales Return\nPurchase Return\nStock Transfer\nStock Movement\nStocktake\nBatch\nInventory\nSupplier\nCustomer\nOffline Customer\nWarehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "外部ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "raw_data",
+   "fieldtype": "JSON",
+   "label": "原始数据"
+  },
+  {
+   "fieldname": "content_hash",
+   "fieldtype": "Data",
+   "label": "内容哈希"
+  },
+  {
+   "fieldname": "failure_category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "失败分类",
+   "options": "接口/鉴权\n缺少主数据\n映射\nERP校验\n库存/批次\n关联单据\n未知"
+  },
+  {
+   "default": "0",
+   "fieldname": "retryable",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "可重试"
+  },
+  {
+   "fieldname": "handling_suggestion",
+   "fieldtype": "Small Text",
+   "label": "建议处理"
+  },
+  {
+   "default": "0",
+   "fieldname": "processed",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "已落库"
+  },
+  {
+   "fieldname": "processed_at",
+   "fieldtype": "Datetime",
+   "label": "落库时间"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "processing_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "处理状态",
+   "options": "Pending\nSucceeded\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Long Text",
+   "label": "失败原因",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "重试次数",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_retry_at",
+   "fieldtype": "Datetime",
+   "label": "最近重试时间",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-29 14:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Raw Record",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

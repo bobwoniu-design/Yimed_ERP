@@ -1,0 +1,34 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-08-24 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["item_name", "enabled", "dashboard_field", "show_on_dashboard", "display_order", "default_allocation_method", "description"],
+ "fields": [
+  {"fieldname":"item_name","fieldtype":"Data","in_list_view":1,"in_standard_filter":1,"label":"费用项目名称","reqd":1,"unique":1},
+  {"default":"1","fieldname":"enabled","fieldtype":"Check","in_list_view":1,"label":"启用"},
+  {"description":"稳定的英文或下划线编码，供报表字段使用。","fieldname":"dashboard_field","fieldtype":"Data","in_list_view":1,"label":"仪表盘字段编码","reqd":1,"unique":1},
+  {"default":"1","fieldname":"show_on_dashboard","fieldtype":"Check","in_list_view":1,"label":"仪表盘显示"},
+  {"default":"0","fieldname":"display_order","fieldtype":"Int","label":"仪表盘排序"},
+  {"default":"不分摊","fieldname":"default_allocation_method","fieldtype":"Select","label":"默认分摊方式","options":"不分摊\n销售额\n订单数\n件数\n固定比例\n平均"},
+  {"fieldname":"description","fieldtype":"Small Text","label":"说明"}
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-08-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ecommerce Dashboard",
+ "name": "Ecommerce Fee Item",
+ "owner": "Administrator",
+ "permissions": [
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"Accounts Manager","share":1,"write":1},
+  {"read":1,"report":1,"role":"Accounts User"},
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"System Manager","share":1,"write":1}
+ ],
+ "sort_field": "item_name",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "item_name",
+ "track_changes": 1
+}

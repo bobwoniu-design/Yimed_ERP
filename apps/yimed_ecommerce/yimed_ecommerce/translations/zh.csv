@@ -1,0 +1,145 @@
+JD Self Operated,京东自营
+JD Procurement,京东采购备货
+Purchase Import Batches,采购单导入批次
+JD Purchase Orders,京东采购订单
+Carton Details,装箱明细
+Handover Forms,上门交接单
+Master Data,基础资料
+SKU Mapping,SKU映射
+Summary Reports,汇总报表
+Stocking Summary,商品备货汇总
+Warehouse Summary,分仓汇总
+JD Self Operated Settings,京东自营设置
+Packing Workbench,装箱工作台
+JD Packing Workbench,装箱工作台
+JD Purchase Order,京东采购订单
+Order Count,订单数
+Restore Analysis Layout,恢复分析卡片布局
+Restore Table Column Layout,恢复表格列布局
+Table component is unavailable,表格组件不可用
+JD Carton,装箱明细
+JD Handover,上门交接单
+JD Stocking Summary,商品备货汇总
+JD Warehouse Summary,分仓汇总
+JD Purchase Workbench,京东采购备货
+Stocking has not been confirmed.,尚未确认备货。
+Sorting has not been completed.,尚未完成分拣。
+Stocking is not complete.,备货尚未完成。
+Sorting is not complete.,分拣尚未完成。
+Batch assignment is incomplete.,批号分配尚未完成。
+A batch is expired or below JD's shelf-life requirement.,批次已过期或不符合京东剩余有效期要求。
+Current inventory no longer covers soft reservations.,当前库存已不足以覆盖软占用数量。
+Ecommerce Dashboard,电商仪表盘
+Promotion Analytics Dashboard,推广分析仪表盘
+Dashboards,仪表盘
+Promotion Trend,推广趋势
+Campaign and Product Performance,计划与商品表现
+Promotion Scene,推广场景
+Campaign,推广计划
+Attribution Window,归因周期
+Default attribution window,默认归因周期
+Impressions,展现量
+Clicks,点击量
+CTR,点击率
+CPC,平均点击花费
+Attributed Sales,平台归因成交金额
+Conversion Rate,点击转化率
+ROI,投入产出比
+Match Status,匹配状态
+Rematch Promotion Products,重新匹配推广商品
+Rematched {0} analysis rows and {1} expense rows.,已重新匹配 {0} 条分析明细和 {1} 条费用明细。
+Business Dashboard,利润预估仪表盘
+Profit Estimate Dashboard,利润预估仪表盘
+Promotion Expense Import,推广费导入
+Promotion Expense Detail,推广费明细
+Fee Rules,费用自动化
+Ecommerce Fee Rule,费用自动化
+Ecommerce Fee Estimate Rule,费用预估规则
+Fee Estimate Rules,费用预估规则
+Ecommerce Fee Item,费用项目
+Ecommerce Fee Detail,费用明细
+Ecommerce Product Listing,渠道商品链接
+Ecommerce Promotion Expense,推广费明细
+Percentage of Sales,按销售额比例
+Per Order,按订单数
+Per Unit,按销售数量
+Fixed Per Day,按天固定金额
+Data Maintenance,数据维护
+Fee Details,费用明细
+Fee Items,费用项目
+Import Promotion Expenses,导入推广费
+Import Tmall Product Promotion Report,导入天猫商品推广报表
+Import Product Promotion Report,导入推广报表（天猫/拼多多/阿里健康）
+拼多多商品推广报表,拼多多商品推广报表
+Tmall Product Promotion Report,天猫商品推广报表
+Importing Tmall product promotion report...,正在导入天猫商品推广报表……
+Download Import Template,下载导入模板
+Promotion Expense File,推广费文件
+Start Import,开始导入
+Import batch {0}: {1} succeeded, {2} failed.,导入批次 {0}：成功 {1} 条，失败 {2} 条。
+Import Completed with Errors,导入完成但存在错误
+Profit Reports,利润报表
+Store Profit,店铺利润
+Listing Profit,链接利润
+Ecommerce Store Profit,店铺利润
+Ecommerce Listing Profit,链接利润
+Import Tools,导入工具
+Sales and Contribution Profit Trend,销售与贡献利润趋势
+Expense Mix,费用构成
+Store Performance,店铺经营
+Data Quality,数据质量
+Net Sales,净销售额
+Gross Profit,毛利润
+Gross Margin,毛利率
+Promotion Expense,推广费
+Promotion Expense Rate,推广费率
+Promotion Expenses,推广费用
+Store,店铺
+Channel,渠道
+Operational basis: submitted sales orders; costs use ERP inventory valuation,经营口径：已提交销售订单；成本采用ERP库存估值
+Contribution Profit,贡献利润
+Contribution Margin,贡献利润率
+Return Rate,退款率
+Cost coverage,成本覆盖率
+Promotion data coverage,推广数据覆盖率
+No prior-period baseline,无上期基准
+vs prior,较上期
+No data in the selected range,所选期间暂无数据
+No data,暂无数据
+Percentage of sales/return quantity with an ERP inventory valuation rate,具有ERP库存估值的销售及退货数量占比
+days have imported promotion expenses,天已导入推广费用
+Promotion,推广费
+Margin,利润率
+Product Listings,渠道商品链接
+Product Listing Profit,链接利润核算
+Listing ID,在售链接ID
+Listing Dimension,链接核算维度
+Main Listing,主链接
+Child Listing,子链接
+Main Listing ID,主链接ID
+Child Listing ID,商品链接SkuID
+JD Purchase Import Batch,采购单导入批次
+Saved Filters,已保存筛选器
+JD SKU Mapping,SKU映射
+JD Self Operated Settings,京东自营设置
+Product,商品
+Product Cost,货品成本
+Allocated Fees,分摊费用
+Allocated Fees Total,分摊费用合计
+Management Fee,管理费
+Listing ID coverage,链接ID覆盖率
+Percentage of sales amount carrying an online listing ID,已带在售链接ID的销售额占比
+Sales without listing ID,未识别链接销售额
+Main Listing ID coverage,主链接ID覆盖率
+Child Listing ID coverage,子链接ID覆盖率
+Percentage of sales amount carrying the selected listing ID,带有所选链接ID的销售额占比
+Deleted all documents successfully,已成功删除所有单据
+Promotion Report File,推广报表文件
+指定店铺（可选）,指定店铺（可选）
+拼多多/阿里健康报表没有店铺列：选这里指定店铺，留空则按商品ID自动匹配；天猫报表自带店铺列，无需选择。,拼多多/阿里健康报表没有店铺列：选这里指定店铺，留空则按商品ID自动匹配；天猫报表自带店铺列，无需选择。
+指定店铺不存在或已停用：{0},指定店铺不存在或已停用：{0}
+指定店铺的平台是 {0}，与报表格式（{1}）不一致，请重新选择。,指定店铺的平台是 {0}，与报表格式（{1}）不一致，请重新选择。
+销售渠道,销售渠道
+报表归属的销售渠道（公司由渠道带出）。拼多多/阿里健康等无店铺列的报表按此渠道入账。,报表归属的销售渠道（公司由渠道带出）。拼多多/阿里健康等无店铺列的报表按此渠道入账。
+请选择有效的销售渠道。,请选择有效的销售渠道。
+所选销售渠道未关联有效公司，请先在渠道档案中维护公司。,所选销售渠道未关联有效公司，请先在渠道档案中维护公司。

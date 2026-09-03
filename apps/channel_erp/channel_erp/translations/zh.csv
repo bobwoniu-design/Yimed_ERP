@@ -1,0 +1,125 @@
+Channel Erp,接口连接器
+Jackyun Integration,吉客云同步
+Content Center,内容中心
+Content Hub,内容中心
+Jackyun Goods Category,吉客云商品分类
+Jackyun Sales Channel,吉客云销售渠道
+Jackyun Inventory Snapshot,吉客云库存快照
+Build,开发
+Search,搜索
+Notification,通知
+DocType,文档类型
+Page,页面
+Report,报表
+Workspace,工作区
+Dashboard,仪表盘
+Module Def,模块定义
+Customization,自定义
+Workflow,工作流
+Server Script,服务器脚本
+Client Script,客户端脚本
+Customize Form,自定义表单
+Custom Field,自定义字段
+Property Setter,属性设置
+New {0},新建{0}
+New Workflow,新建工作流
+Not Saved,未保存
+Save,保存
+Workflow Builder,工作流设计器
+Create your workflow visually using the Workflow Builder.,使用工作流设计器直观地创建审批流程。
+Workflow Builder allows you to create workflows visually. You can drag and drop states and link them to create transitions. Also you can update their properties from the sidebar.,工作流设计器支持可视化创建流程。你可以拖放状态并连接它们来创建流转规则，也可以在侧边栏中修改其属性。
+Workflow Name,工作流名称
+Document Type,单据类型
+DocType on which this Workflow is applicable.,此工作流适用的单据类型。
+Is Active,启用
+"If checked, all other workflows become inactive.",选中后，此单据类型的其他工作流将停用。
+Don't Override Status,不覆盖单据状态
+If Checked workflow status will not override status in list view,选中后，工作流状态不会覆盖列表中的单据状态。
+Send Email Alert,发送邮件提醒
+Emails will be sent with next possible workflow actions,系统将通过邮件发送下一步可执行的工作流操作。
+Enable Action Confirmation,启用操作确认
+"If checked, a confirmation will be required before performing workflow actions.",选中后，执行工作流操作前需要再次确认。
+States,状态
+"Different ""States"" this document can exist in. Like ""Open"", ""Pending Approval"" etc.",单据可以处于不同状态，例如“打开”“待审批”等。
+Document States,单据状态
+Transition Rules,流转规则
+Transitions,流转
+Workflow State Field,工作流状态字段
+"Field that represents the Workflow State of the transaction (if field is not present, a new hidden Custom Field will be created)",表示单据工作流状态的字段；如果字段不存在，系统将创建一个隐藏的自定义字段。
+Workflow Data,工作流数据
+State,状态
+Action,操作
+Next State,下一状态
+Allowed,允许操作的角色
+Allow Self Approval,允许自我审批
+Allow approval for creator of the document,允许单据创建人审批。
+Conditions,条件
+Condition,条件表达式
+Example,示例
+Doc Status,单据状态
+"0 - Draft; 1 - Submitted; 2 - Cancelled","0－草稿；1－已提交；2－已取消"
+Update Field,更新字段
+Update Value,更新值
+Only Allow Edit For,仅允许以下角色编辑
+Message,提示信息
+Next Action Email Template,下一操作邮件模板
+Is Optional State,可选状态
+Send Email On State,进入此状态时发送邮件
+Evaluate as Expression,按表达式计算
+Workflow Action Name,工作流操作名称
+Workflow Action,工作流操作
+Workflow State,工作流状态
+Open,打开
+Pending,待处理
+Pending Approval,待审批
+Approve,批准
+Approved,已批准
+Reject,驳回
+Rejected,已驳回
+Draft,草稿
+Submitted,已提交
+Cancelled,已取消
+List View,列表视图
+Menu,菜单
+Actions,操作
+Filter,筛选
+Clear all filters,清除全部筛选
+Created On,创建时间
+Last Updated On,最后更新时间
+User Menu,用户菜单
+Begin typing for results.,请输入关键词搜索。
+No.,序号
+No rows,暂无数据
+Add row,添加一行
+"All possible Workflow States and roles of the workflow. Docstatus Options: 0 is ""Saved"", 1 is ""Submitted"" and 2 is ""Cancelled""",工作流的全部可用状态及其对应角色。单据状态：0 为“已保存”，1 为“已提交”，2 为“已取消”。
+"Rules for how states are transitions, like next state and which role is allowed to change state etc.",设置状态如何流转，包括下一状态以及允许执行状态变更的角色等。
+Rules defining transition of state in the workflow.,定义工作流中的状态流转规则。
+Type a reply / comment,输入回复或评论
+Comments,评论
+Activity,动态
+Add Row,添加一行
+Company,公司
+Department,部门
+Category,商品分类
+Sales Channel,销售渠道
+Supplier,供应商
+Offline Customer,线下客户
+Warehouse,仓库
+SKU,商品
+Inventory,库存快照
+Product Bundle,组合装
+Batch,批次
+Purchase Order,采购订单
+Purchase Receipt,采购入库
+Purchase Return,采购退货
+Sales Order,销售订单
+Delivery Note,销售出库
+Sales Return,销售退货
+Stock Transfer,调拨单
+Stocktake,盘点单
+Pull Only,仅拉取
+Push Only,仅推送
+Bidirectional,双向同步
+Disabled,禁用
+Source warehouse required for stock item {0},库存商品 {0} 必须填写发货仓库
+Cannot delete or cancel because {0} {1} is linked with {2} {3} {4},由于 {0} {1} 与 {2} {3} {4} 关联，无法删除或取消

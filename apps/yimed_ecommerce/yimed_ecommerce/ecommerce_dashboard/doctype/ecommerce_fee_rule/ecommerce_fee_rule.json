@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "autoname": "format:FEE-{#####}",
+ "creation": "2026-08-21 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["rule_name", "enabled", "company", "fee_item", "scope_section", "scopes", "scope_dates_section", "valid_from", "column_break_scope_dates", "valid_to", "accrual_section", "auto_accrual", "accrual_frequency", "daily_accrual_amount", "default_allocation_method", "remarks"],
+ "fields": [
+  {"fieldname":"rule_name","fieldtype":"Data","in_list_view":1,"in_standard_filter":1,"label":"规则名称","reqd":1},
+  {"default":"1","fieldname":"enabled","fieldtype":"Check","in_list_view":1,"label":"启用"},
+  {"fieldname":"company","fieldtype":"Link","in_list_view":1,"in_standard_filter":1,"label":"公司","options":"Company","reqd":1},
+  {"description":"启用自动计提时必填的费用项目。","fieldname":"fee_item","fieldtype":"Link","in_list_view":1,"in_standard_filter":1,"label":"费用项目","options":"Ecommerce Fee Item"},
+  {"fieldname":"scope_section","fieldtype":"Section Break","label":"适用范围"},
+  {"description":"可增加多行。店铺留空表示适用该渠道下全部店铺；整张表留空表示适用全部渠道和店铺。","fieldname":"scopes","fieldtype":"Table","label":"适用渠道及店铺（多选）","options":"Ecommerce Fee Rule Scope"},
+  {"fieldname":"scope_dates_section","fieldtype":"Section Break","label":"有效期"},
+  {"fieldname":"valid_from","fieldtype":"Date","label":"生效日期","reqd":1},
+  {"fieldname":"column_break_scope_dates","fieldtype":"Column Break"},
+  {"fieldname":"valid_to","fieldtype":"Date","label":"失效日期"},
+  {"fieldname":"accrual_section","fieldtype":"Section Break","label":"每日自动计提"},
+  {"default":"0","fieldname":"auto_accrual","fieldtype":"Check","label":"启用自动计提"},
+  {"default":"Daily","fieldname":"accrual_frequency","fieldtype":"Select","label":"计提频率","options":"Daily","depends_on":"eval:doc.auto_accrual"},
+  {"default":"0","fieldname":"daily_accrual_amount","fieldtype":"Currency","label":"每日计提金额","depends_on":"eval:doc.auto_accrual"},
+  {"default":"不分摊","fieldname":"default_allocation_method","fieldtype":"Select","label":"默认分摊方式","options":"不分摊\n销售额\n订单数\n件数\n固定比例\n平均"},
+  {"fieldname":"remarks","fieldtype":"Small Text","label":"备注"}
+ ],
+ "links": [],
+ "modified": "2026-08-21 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ecommerce Dashboard",
+ "name": "Ecommerce Fee Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"Accounts Manager","share":1,"write":1},
+  {"read":1,"report":1,"role":"Accounts User"},
+  {"create":1,"delete":1,"email":1,"export":1,"print":1,"read":1,"report":1,"role":"System Manager","share":1,"write":1},
+  {"read":1,"report":1,"role":"Sales Manager"}
+ ],
+ "sort_field": "valid_from",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

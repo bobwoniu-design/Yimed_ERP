@@ -1,0 +1,23 @@
+{
+ "actions": [],
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["channel_name", "store_name"],
+ "fields": [
+  {"description":"销售渠道档案的 online_platform_name。","fieldname":"channel_name","fieldtype":"Autocomplete","in_list_view":1,"label":"渠道","reqd":1},
+  {"description":"销售渠道档案的 channel_name；留空表示渠道下全部店铺。","fieldname":"store_name","fieldtype":"Autocomplete","in_list_view":1,"label":"店铺"}
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ecommerce Dashboard",
+ "name": "Ecommerce Fee Rule Scope",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": []
+}

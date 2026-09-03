@@ -1,0 +1,173 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 23:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "version",
+    "token_hash",
+    "status",
+    "expires_at",
+    "permission_section",
+    "allow_preview",
+    "allow_download",
+    "max_downloads",
+    "download_count",
+    "password_hash",
+    "watermark_text",
+    "audit_section",
+    "created_by",
+    "created_at",
+    "revoked_by",
+    "revoked_at",
+    "last_accessed_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "label": "内容资产",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "version",
+      "fieldtype": "Data",
+      "label": "版本快照",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "token_hash",
+      "fieldtype": "Data",
+      "hidden": 1,
+      "label": "令牌摘要",
+      "read_only": 1,
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "状态",
+      "options": "Active\nRevoked\nExpired",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "expires_at",
+      "fieldtype": "Datetime",
+      "label": "失效时间",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "permission_section",
+      "fieldtype": "Section Break",
+      "label": "访问控制"
+    },
+    {
+      "default": "1",
+      "fieldname": "allow_preview",
+      "fieldtype": "Check",
+      "label": "允许预览",
+      "read_only": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "allow_download",
+      "fieldtype": "Check",
+      "label": "允许下载",
+      "read_only": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "max_downloads",
+      "fieldtype": "Int",
+      "label": "最大下载次数（0为不限）",
+      "read_only": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "download_count",
+      "fieldtype": "Int",
+      "label": "已下载次数",
+      "read_only": 1
+    },
+    {
+      "fieldname": "password_hash",
+      "fieldtype": "Small Text",
+      "hidden": 1,
+      "label": "密码摘要",
+      "read_only": 1
+    },
+    {
+      "fieldname": "watermark_text",
+      "fieldtype": "Data",
+      "label": "水印文字",
+      "read_only": 1
+    },
+    {
+      "fieldname": "audit_section",
+      "fieldtype": "Section Break",
+      "label": "审计"
+    },
+    {
+      "fieldname": "created_by",
+      "fieldtype": "Data",
+      "label": "创建人",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "created_at",
+      "fieldtype": "Datetime",
+      "label": "创建时间",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "revoked_by",
+      "fieldtype": "Data",
+      "label": "撤销人",
+      "read_only": 1
+    },
+    {
+      "fieldname": "revoked_at",
+      "fieldtype": "Datetime",
+      "label": "撤销时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "last_accessed_at",
+      "fieldtype": "Datetime",
+      "label": "最后访问时间",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-14 23:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Share Link",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

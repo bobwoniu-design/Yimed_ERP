@@ -1,0 +1,286 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 13:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "title",
+    "folder",
+    "status",
+    "current_version",
+    "file_section",
+    "file_name",
+    "file_type",
+    "mime_type",
+    "file_size",
+    "metadata_section",
+    "rating",
+    "tags",
+    "notes",
+    "governance_section",
+    "responsible_user",
+    "department",
+    "expires_on",
+    "lock_section",
+    "content_locked",
+    "locked_by",
+    "locked_at",
+    "publication_section",
+    "publication_status",
+    "submitted_by",
+    "submitted_at",
+    "reviewed_by",
+    "reviewed_at",
+    "review_note",
+    "audit_section",
+    "uploaded_by",
+    "trashed_at",
+    "trashed_by"
+  ],
+  "fields": [
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "in_global_search": 1,
+      "in_list_view": 1,
+      "label": "标题",
+      "reqd": 1
+    },
+    {
+      "fieldname": "folder",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "文件夹",
+      "options": "Channel Content Folder",
+      "reqd": 1
+    },
+    {
+      "default": "Active",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "状态",
+      "options": "Active\nTrashed",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "current_version",
+      "fieldtype": "Link",
+      "label": "当前版本",
+      "options": "Channel Content Asset Version",
+      "read_only": 1
+    },
+    {
+      "fieldname": "file_section",
+      "fieldtype": "Section Break",
+      "label": "当前文件"
+    },
+    {
+      "fieldname": "file_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "文件名",
+      "read_only": 1
+    },
+    {
+      "fieldname": "file_type",
+      "fieldtype": "Data",
+      "label": "文件类型",
+      "read_only": 1
+    },
+    {
+      "fieldname": "mime_type",
+      "fieldtype": "Data",
+      "label": "MIME 类型",
+      "read_only": 1
+    },
+    {
+      "fieldname": "file_size",
+      "fieldtype": "Int",
+      "label": "文件大小",
+      "options": "File Size",
+      "read_only": 1
+    },
+    {
+      "fieldname": "metadata_section",
+      "fieldtype": "Section Break",
+      "label": "内容信息"
+    },
+    {
+      "default": "0",
+      "fieldname": "rating",
+      "fieldtype": "Int",
+      "label": "星级"
+    },
+    {
+      "fieldname": "tags",
+      "fieldtype": "Small Text",
+      "in_global_search": 1,
+      "label": "标签",
+      "description": "多个标签使用逗号分隔"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "in_global_search": 1,
+      "label": "备注"
+    },
+    {
+      "fieldname": "governance_section",
+      "fieldtype": "Section Break",
+      "label": "文件治理"
+    },
+    {
+      "fieldname": "responsible_user",
+      "fieldtype": "Link",
+      "label": "责任人",
+      "options": "User"
+    },
+    {
+      "fieldname": "department",
+      "fieldtype": "Link",
+      "label": "责任部门",
+      "options": "Department"
+    },
+    {
+      "fieldname": "expires_on",
+      "fieldtype": "Date",
+      "label": "到期日期"
+    },
+    {
+      "fieldname": "lock_section",
+      "fieldtype": "Section Break",
+      "label": "锁定状态"
+    },
+    {
+      "default": "0",
+      "fieldname": "content_locked",
+      "fieldtype": "Check",
+      "label": "已锁定",
+      "read_only": 1
+    },
+    {
+      "fieldname": "locked_by",
+      "fieldtype": "Link",
+      "label": "锁定人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "locked_at",
+      "fieldtype": "Datetime",
+      "label": "锁定时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "publication_section",
+      "fieldtype": "Section Break",
+      "label": "审批与发布"
+    },
+    {
+      "default": "Draft",
+      "fieldname": "publication_status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "发布状态",
+      "options": "Draft\nPending\nPublished\nRejected",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "submitted_by",
+      "fieldtype": "Link",
+      "label": "提交人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "submitted_at",
+      "fieldtype": "Datetime",
+      "label": "提交时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reviewed_by",
+      "fieldtype": "Link",
+      "label": "审批人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reviewed_at",
+      "fieldtype": "Datetime",
+      "label": "审批时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "review_note",
+      "fieldtype": "Small Text",
+      "label": "审批意见",
+      "read_only": 1
+    },
+    {
+      "fieldname": "audit_section",
+      "fieldtype": "Section Break",
+      "label": "审计"
+    },
+    {
+      "fieldname": "uploaded_by",
+      "fieldtype": "Link",
+      "label": "上传人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "trashed_at",
+      "fieldtype": "Datetime",
+      "label": "移入回收站时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "trashed_by",
+      "fieldtype": "Link",
+      "label": "删除人",
+      "options": "User",
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "modified": "2026-08-14 13:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Asset",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "read": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "read": 1,
+      "role": "Content Center Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "read": 1,
+      "role": "Content Center User"
+    }
+  ],
+  "search_fields": "file_name,tags,notes",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "title",
+  "track_changes": 1
+}

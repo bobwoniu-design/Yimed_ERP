@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "autoname": "field:company",
+ "creation": "2026-08-19 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["company", "warehouse_section", "default_source_warehouse", "default_target_warehouse", "column_break_warehouse", "default_transfer_mode", "default_transit_warehouse", "allow_warehouse_override", "pickup_section", "pickup_address", "column_break_pickup", "pickup_contact", "pickup_phone", "starting_tc"],
+ "fields": [
+  {"fieldname": "company", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "公司", "options": "Company", "reqd": 1, "unique": 1},
+  {"fieldname": "warehouse_section", "fieldtype": "Section Break", "label": "调拨默认值"},
+  {"fieldname": "default_source_warehouse", "fieldtype": "Link", "in_list_view": 1, "label": "默认发货仓", "options": "Warehouse", "reqd": 1},
+  {"fieldname": "default_target_warehouse", "fieldtype": "Link", "in_list_view": 1, "label": "默认京东自营仓", "options": "Warehouse", "reqd": 1},
+  {"fieldname": "column_break_warehouse", "fieldtype": "Column Break"},
+  {"default": "一步调拨", "fieldname": "default_transfer_mode", "fieldtype": "Select", "label": "默认调拨方式", "options": "一步调拨\n两步调拨", "reqd": 1},
+  {"depends_on": "eval:doc.default_transfer_mode === '两步调拨'", "fieldname": "default_transit_warehouse", "fieldtype": "Link", "label": "默认在途仓", "mandatory_depends_on": "eval:doc.default_transfer_mode === '两步调拨'", "options": "Warehouse"},
+  {"default": "1", "description": "关闭后，采购单生成调拨单时必须使用本设置中的调拨方式和仓库。", "fieldname": "allow_warehouse_override", "fieldtype": "Check", "label": "允许制单时修改仓库"},
+  {"fieldname": "pickup_section", "fieldtype": "Section Break", "label": "提货信息"},
+  {"fieldname": "pickup_address", "fieldtype": "Small Text", "label": "默认提货地址"},
+  {"fieldname": "column_break_pickup", "fieldtype": "Column Break"},
+  {"fieldname": "pickup_contact", "fieldtype": "Data", "label": "默认联系人"},
+  {"fieldname": "pickup_phone", "fieldtype": "Data", "label": "默认联系电话", "options": "Phone"},
+  {"fieldname": "starting_tc", "fieldtype": "Data", "label": "默认始发TC"}
+ ],
+ "links": [],
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "JD Self Operated Settings",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Stock Manager", "share": 1, "write": 1},
+  {"read": 1, "role": "Stock User"},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1}
+ ],
+ "quick_entry": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

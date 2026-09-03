@@ -1,0 +1,114 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 13:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "version_number",
+    "file",
+    "file_url",
+    "original_filename",
+    "mime_type",
+    "size_bytes",
+    "content_hash",
+    "change_note",
+    "created_by_user"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "内容资产",
+      "options": "Channel Content Asset",
+      "reqd": 1
+    },
+    {
+      "fieldname": "version_number",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "版本号",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "file",
+      "fieldtype": "Link",
+      "label": "Frappe 文件",
+      "options": "File",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "file_url",
+      "fieldtype": "Code",
+      "label": "文件地址",
+      "read_only": 1
+    },
+    {
+      "fieldname": "original_filename",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "原文件名",
+      "read_only": 1
+    },
+    {
+      "fieldname": "mime_type",
+      "fieldtype": "Data",
+      "label": "MIME 类型",
+      "read_only": 1
+    },
+    {
+      "fieldname": "size_bytes",
+      "fieldtype": "Int",
+      "label": "文件大小",
+      "options": "File Size",
+      "read_only": 1
+    },
+    {
+      "fieldname": "content_hash",
+      "fieldtype": "Data",
+      "label": "内容哈希",
+      "read_only": 1
+    },
+    {
+      "fieldname": "change_note",
+      "fieldtype": "Small Text",
+      "label": "版本说明"
+    },
+    {
+      "fieldname": "created_by_user",
+      "fieldtype": "Link",
+      "label": "创建人",
+      "options": "User",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-14 13:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Asset Version",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center User"
+    }
+  ],
+  "sort_field": "version_number",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

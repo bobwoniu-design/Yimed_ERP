@@ -1,0 +1,29 @@
+{
+ "actions": [],
+ "creation": "2026-08-19 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["purchase_order", "destination_city", "packing_status", "carton_count", "actual_received_cartons", "outer_carton_mark", "pickup_notes", "receipt_notes"],
+ "fields": [
+  {"fieldname": "purchase_order", "fieldtype": "Link", "in_list_view": 1, "label": "京东采购单", "options": "JD Purchase Order", "reqd": 1},
+  {"fetch_from": "purchase_order.destination_city", "fieldname": "destination_city", "fieldtype": "Data", "in_list_view": 1, "label": "目的城市", "read_only": 1},
+  {"fetch_from": "purchase_order.packing_status", "fieldname": "packing_status", "fieldtype": "Data", "in_list_view": 1, "label": "装箱状态", "read_only": 1},
+  {"fetch_from": "purchase_order.total_cartons", "fieldname": "carton_count", "fieldtype": "Int", "in_list_view": 1, "label": "箱数", "read_only": 1},
+  {"default": "0", "fieldname": "actual_received_cartons", "fieldtype": "Int", "label": "TC收货箱数"},
+  {"fieldname": "outer_carton_mark", "fieldtype": "Data", "label": "外箱标识"},
+  {"fieldname": "pickup_notes", "fieldtype": "Data", "label": "提货说明"},
+  {"fieldname": "receipt_notes", "fieldtype": "Data", "label": "TC收货说明"}
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "JD Handover Purchase Order",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

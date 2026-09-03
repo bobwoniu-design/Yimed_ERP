@@ -1,0 +1,66 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 16:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "user",
+    "asset",
+    "last_accessed",
+    "access_count"
+  ],
+  "fields": [
+    {
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "label": "用户",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "asset",
+      "fieldtype": "Link",
+      "label": "内容资产",
+      "options": "Channel Content Asset",
+      "reqd": 1
+    },
+    {
+      "fieldname": "last_accessed",
+      "fieldtype": "Datetime",
+      "label": "最近访问",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "default": "1",
+      "fieldname": "access_count",
+      "fieldtype": "Int",
+      "label": "访问次数",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-14 16:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Access Log",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "delete": 1,
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "delete": 1,
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "last_accessed",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

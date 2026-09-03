@@ -1,0 +1,138 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-15 09:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "folder",
+    "version",
+    "suggestion_type",
+    "value",
+    "reference_doctype",
+    "reference_name",
+    "confidence",
+    "reason",
+    "status",
+    "generated_at",
+    "acted_by",
+    "acted_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "label": "内容资产",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "folder",
+      "fieldtype": "Data",
+      "label": "文件夹",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "version",
+      "fieldtype": "Data",
+      "label": "版本快照",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "suggestion_type",
+      "fieldtype": "Select",
+      "label": "建议类型",
+      "options": "Tag\nRelation",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "value",
+      "fieldtype": "Data",
+      "label": "建议值",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "reference_doctype",
+      "fieldtype": "Data",
+      "label": "关联类型",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reference_name",
+      "fieldtype": "Data",
+      "label": "关联记录",
+      "read_only": 1
+    },
+    {
+      "fieldname": "confidence",
+      "fieldtype": "Float",
+      "label": "置信度",
+      "precision": "4",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "reason",
+      "fieldtype": "Small Text",
+      "label": "推荐理由",
+      "read_only": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "状态",
+      "options": "Pending\nAccepted\nDismissed",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "generated_at",
+      "fieldtype": "Datetime",
+      "label": "生成时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "acted_by",
+      "fieldtype": "Data",
+      "label": "处理人",
+      "read_only": 1
+    },
+    {
+      "fieldname": "acted_at",
+      "fieldtype": "Datetime",
+      "label": "处理时间",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-15 09:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Suggestion",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

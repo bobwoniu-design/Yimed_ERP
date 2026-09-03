@@ -1,0 +1,336 @@
+{
+ "actions": [],
+ "autoname": "field:title",
+ "creation": "2026-08-14 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "enabled",
+  "notify_on_failure",
+  "platform",
+  "gateway",
+  "app_key",
+  "app_secret",
+  "version",
+  "company_codes",
+  "conflict_policy",
+  "push_method_map",
+  "outbound_section",
+  "outbound_enabled",
+  "outbound_test_mode",
+  "outbound_enabled_at",
+  "default_cancel_reason",
+  "audit_operator",
+  "auto_audit_outbound",
+  "sales_order_start_date",
+  "purchase_order_start_date",
+  "purchase_receipt_start_date",
+  "delivery_note_start_date",
+  "sales_return_start_date",
+  "purchase_return_start_date",
+  "stock_transfer_start_date",
+  "stocktake_start_date",
+  "batch_start_date",
+  "document_status_section",
+  "auto_submit_sales_orders",
+  "auto_submit_delivery_notes",
+  "auto_submit_purchase_orders",
+  "auto_submit_purchase_receipts",
+  "auto_submit_stock_transfers",
+  "auto_submit_stock_movements",
+  "sync_schedule_section",
+  "sync_schedules",
+  "last_sync_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "标题",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "启用"
+  },
+  {
+   "default": "1",
+   "description": "同步失败或部分失败时，向管理员发送站内通知；关闭后不再通知",
+   "fieldname": "notify_on_failure",
+   "fieldtype": "Check",
+   "label": "同步失败告警"
+  },
+  {
+   "default": "jackyun",
+   "description": "对接的外部 ERP 平台类型；切换后按对应适配器同步",
+   "fieldname": "platform",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "平台类型",
+   "options": "jackyun\nwangdiantong",
+   "reqd": 1
+  },
+  {
+   "default": "https://open.jackyun.com/open/openapi/do",
+   "fieldname": "gateway",
+   "fieldtype": "Data",
+   "label": "API 网关",
+   "reqd": 1
+  },
+  {
+   "fieldname": "app_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AppKey",
+   "reqd": 1
+  },
+  {
+   "fieldname": "app_secret",
+   "fieldtype": "Password",
+   "label": "AppSecret",
+   "reqd": 1
+  },
+  {
+   "default": "v1.0",
+   "fieldname": "version",
+   "fieldtype": "Data",
+   "label": "API 版本"
+  },
+  {
+   "description": "多个吉客云公司编码用英文逗号分隔；留空同步全部公司",
+   "fieldname": "company_codes",
+   "fieldtype": "Data",
+   "label": "同步公司编码"
+  },
+  {
+   "default": "吉客云优先",
+   "description": "双向同步遇到同一记录两端均变更时的处理规则；人工复核最安全",
+   "fieldname": "conflict_policy",
+   "fieldtype": "Select",
+   "label": "双向冲突规则",
+   "options": "吉客云优先\nERPNext优先\n最新修改优先\n人工复核",
+   "reqd": 1
+  },
+  {
+   "description": "仅填写已获授权并完成字段评审的写接口，例如 {\"Sales Order.Create\":\"method.name\"}；留空时推送队列安全阻断",
+   "fieldname": "push_method_map",
+   "fieldtype": "Code",
+   "label": "推送接口映射（JSON）",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "outbound_section",
+   "fieldtype": "Section Break",
+   "label": "写入吉客云"
+  },
+  {
+   "default": "0",
+   "description": "总开关。关闭时只允许预演，不生成任何外部写请求",
+   "fieldname": "outbound_enabled",
+   "fieldtype": "Check",
+   "label": "允许写入吉客云"
+  },
+  {
+   "default": "1",
+   "description": "测试订单使用 ERPTEST- 标识，测试结束必须进入精确取消清理流程",
+   "fieldname": "outbound_test_mode",
+   "fieldtype": "Check",
+   "label": "写入测试模式"
+  },
+  {
+   "description": "仅此时间之后新建的 ERPNext 来源订单可自动进入写入队列，历史订单不会补推",
+   "fieldname": "outbound_enabled_at",
+   "fieldtype": "Datetime",
+   "label": "写入启用时间",
+   "read_only": 1
+  },
+  {
+   "default": "420001",
+   "fieldname": "default_cancel_reason",
+   "fieldtype": "Data",
+   "label": "默认取消原因编码",
+   "reqd": 1
+  },
+  {
+   "default": "admin",
+   "fieldname": "audit_operator",
+   "fieldtype": "Data",
+   "label": "审核操作员",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "默认关闭；创建、取消和回执测试全部通过后再单独启用",
+   "fieldname": "auto_audit_outbound",
+   "fieldtype": "Check",
+   "label": "创建后自动审核"
+  },
+  {
+   "default": "2026-01-01",
+   "description": "首次销售订单同步的创建时间起点；之后自动按修改时间增量",
+   "fieldname": "sales_order_start_date",
+   "fieldtype": "Date",
+   "label": "销售订单同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "description": "首次采购订单同步的创建时间起点；之后自动按修改时间增量",
+   "fieldname": "purchase_order_start_date",
+   "fieldtype": "Date",
+   "label": "采购订单同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "description": "首次销售出库同步的出库时间起点；之后分别按表头和明细修改时间增量",
+   "fieldname": "delivery_note_start_date",
+   "fieldtype": "Date",
+   "label": "销售出库同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "description": "首次采购入库同步的入库时间起点；之后分别按表头和明细修改时间增量",
+   "fieldname": "purchase_receipt_start_date",
+   "fieldtype": "Date",
+   "label": "采购入库同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "description": "首次销售退货同步起点；之后按表头和明细修改时间增量",
+   "fieldname": "sales_return_start_date",
+   "fieldtype": "Date",
+   "label": "销售退货同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "description": "首次采购退货同步起点；之后按表头和明细修改时间增量",
+   "fieldname": "purchase_return_start_date",
+   "fieldtype": "Date",
+   "label": "采购退货同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "fieldname": "stock_transfer_start_date",
+   "fieldtype": "Date",
+   "label": "调拨同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "fieldname": "stocktake_start_date",
+   "fieldtype": "Date",
+   "label": "盘点同步起始日期",
+   "reqd": 1
+  },
+  {
+   "default": "2026-08-08",
+   "fieldname": "batch_start_date",
+   "fieldtype": "Date",
+   "label": "批次同步起始日期",
+   "reqd": 1
+  },
+  {
+   "description": "自动提交只会作用于符合安全状态策略的吉客云单据；销售出库提交会产生库存过账",
+   "fieldname": "document_status_section",
+   "fieldtype": "Section Break",
+   "label": "单据状态执行"
+  },
+  {
+   "default": "0",
+   "description": "仅自动提交吉客云状态为发货在途（6000）或已完成（9090）的销售订单；取消、合并、拆分订单不会提交",
+   "fieldname": "auto_submit_sales_orders",
+   "fieldtype": "Check",
+   "label": "自动提交销售订单"
+  },
+  {
+   "default": "0",
+   "description": "仅自动提交销售出库（201）的有效蓝单；会生成库存过账，启用前请确认库存和负库存策略",
+   "fieldname": "auto_submit_delivery_notes",
+   "fieldtype": "Check",
+   "label": "自动提交销售出库"
+  },
+  {
+   "default": "0",
+   "description": "仅自动提交吉客云审核通过(revwStatus=2)的采购单；作废(10/20)的会提交后取消",
+   "fieldname": "auto_submit_purchase_orders",
+   "fieldtype": "Check",
+   "label": "自动提交采购订单"
+  },
+  {
+   "default": "0",
+   "description": "仅自动提交采购入库（101）的有效蓝单；会生成库存过账，启用前请确认库存和负库存策略",
+   "fieldname": "auto_submit_purchase_receipts",
+   "fieldtype": "Check",
+   "label": "自动提交采购入库"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_submit_stock_transfers",
+   "fieldtype": "Check",
+   "label": "自动提交调拨单"
+  },
+  {
+   "default": "0",
+   "description": "仅自动提交吉客云库存异动（生产领料/完工入库/其他出入库等）；会生成库存过账",
+   "fieldname": "auto_submit_stock_movements",
+   "fieldtype": "Check",
+   "label": "自动提交库存异动"
+  },
+  {
+   "description": "每项资源可设置启用状态、同步方向、首次同步时间，以及30分钟、1小时、6小时等频率；当前已实现拉取方向",
+   "fieldname": "sync_schedule_section",
+   "fieldtype": "Section Break",
+   "label": "同步资源配置"
+  },
+  {
+   "fieldname": "sync_schedules",
+   "fieldtype": "Table",
+   "label": "同步计划",
+   "options": "Jackyun Sync Schedule"
+  },
+  {
+   "fieldname": "last_sync_at",
+   "fieldtype": "Datetime",
+   "label": "最近同步时间",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Connection",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1
+}

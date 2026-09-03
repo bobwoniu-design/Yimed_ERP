@@ -1,0 +1,111 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-15 09:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "folder",
+    "version",
+    "status",
+    "summary",
+    "keywords",
+    "language",
+    "error_summary",
+    "queued_at",
+    "generated_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "label": "内容资产",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "folder",
+      "fieldtype": "Data",
+      "label": "文件夹",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "version",
+      "fieldtype": "Data",
+      "label": "版本快照",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "状态",
+      "options": "Waiting\nPending\nProcessing\nReady\nFailed\nDisabled",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "summary",
+      "fieldtype": "Long Text",
+      "label": "抽取式摘要",
+      "read_only": 1
+    },
+    {
+      "fieldname": "keywords",
+      "fieldtype": "Long Text",
+      "label": "关键词 JSON",
+      "read_only": 1
+    },
+    {
+      "fieldname": "language",
+      "fieldtype": "Data",
+      "label": "语言",
+      "read_only": 1
+    },
+    {
+      "fieldname": "error_summary",
+      "fieldtype": "Small Text",
+      "label": "状态说明",
+      "read_only": 1
+    },
+    {
+      "fieldname": "queued_at",
+      "fieldtype": "Datetime",
+      "label": "排队时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "generated_at",
+      "fieldtype": "Datetime",
+      "label": "生成时间",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-15 09:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Insight",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

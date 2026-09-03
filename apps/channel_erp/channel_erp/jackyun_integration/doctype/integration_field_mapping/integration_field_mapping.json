@@ -1,0 +1,173 @@
+{
+ "actions": [],
+ "autoname": "field:mapping_key",
+ "creation": "2026-08-29 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "mapping_key",
+  "platform",
+  "resource",
+  "source_field",
+  "classification",
+  "sync_direction",
+  "required",
+  "key_role",
+  "data_type",
+  "target_doctype",
+  "target_field",
+  "transformation",
+  "null_policy",
+  "update_policy",
+  "source_of_truth",
+  "sensitive_level",
+  "api_method_or_version"
+ ],
+ "fields": [
+  {
+   "fieldname": "mapping_key",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "映射键",
+   "read_only": 1,
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "platform",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "平台",
+   "read_only": 1
+  },
+  {
+   "fieldname": "resource",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "同步资源",
+   "read_only": 1
+  },
+  {
+   "fieldname": "source_field",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "平台字段",
+   "read_only": 1
+  },
+  {
+   "fieldname": "classification",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "字段分类",
+   "options": "ERPNext字段\n同步控制\n原始记录保留\n未使用/不适用",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sync_direction",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "同步方向",
+   "options": "拉取\n推送\n双向\n不适用",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "required",
+   "fieldtype": "Check",
+   "label": "必需字段",
+   "read_only": 1
+  },
+  {
+   "fieldname": "key_role",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "键角色",
+   "options": "外部ID\n业务键\n普通字段\n控制字段",
+   "read_only": 1
+  },
+  {
+   "fieldname": "data_type",
+   "fieldtype": "Data",
+   "label": "数据类型",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "ERPNext单据",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_field",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "ERPNext字段",
+   "read_only": 1
+  },
+  {
+   "fieldname": "transformation",
+   "fieldtype": "Small Text",
+   "label": "转换说明",
+   "read_only": 1
+  },
+  {
+   "fieldname": "null_policy",
+   "fieldtype": "Small Text",
+   "label": "空值策略",
+   "read_only": 1
+  },
+  {
+   "fieldname": "update_policy",
+   "fieldtype": "Small Text",
+   "label": "更新策略",
+   "read_only": 1
+  },
+  {
+   "fieldname": "source_of_truth",
+   "fieldtype": "Data",
+   "label": "主数据来源",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sensitive_level",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "敏感级别",
+   "options": "普通\n内部\n敏感",
+   "read_only": 1
+  },
+  {
+   "fieldname": "api_method_or_version",
+   "fieldtype": "Small Text",
+   "label": "接口方法/版本",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-29 14:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Integration Field Mapping",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  }
+ ],
+ "sort_field": "resource",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "resource",
+ "track_changes": 0
+}

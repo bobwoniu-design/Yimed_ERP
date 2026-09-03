@@ -1,0 +1,41 @@
+{
+ "app": "channel_erp",
+ "creation": "2026-08-14 15:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "folder",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "home",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "首页",
+   "link_to": "Content Hub",
+   "link_type": "Workspace",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "folder",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "公司文件中心",
+   "link_to": "content-center",
+   "link_type": "Page",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-14 15:20:00.000000",
+ "modified_by": "Administrator",
+ "module": "Content Center",
+ "name": "Content Hub",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Content Hub"
+}

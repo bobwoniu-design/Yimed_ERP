@@ -1,0 +1,73 @@
+{
+  "actions": [],
+  "creation": "2026-08-14 20:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "recipient",
+    "reminder_date",
+    "stage",
+    "notification_log"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "内容文件",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "recipient",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "收件人",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "reminder_date",
+      "fieldtype": "Date",
+      "in_list_view": 1,
+      "label": "提醒日期",
+      "reqd": 1
+    },
+    {
+      "fieldname": "stage",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "提醒阶段",
+      "reqd": 1
+    },
+    {
+      "fieldname": "notification_log",
+      "fieldtype": "Link",
+      "label": "系统通知",
+      "options": "Notification Log",
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "modified": "2026-08-14 20:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Expiry Reminder Log",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}

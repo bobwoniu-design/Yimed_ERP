@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "creation": "2026-08-14 16:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "resource",
+  "direction",
+  "interval_minutes",
+  "sync_start_at",
+    "last_enqueued_at",
+    "last_success_at",
+    "last_pulled_count",
+    "last_status",
+  "consecutive_failures",
+  "next_run_at"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "启用"
+  },
+  {
+   "fieldname": "resource",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "同步类型",
+   "options": "Company\nDepartment\nCategory\nSales Channel\nSupplier\nOffline Customer\nWarehouse\nSKU\nInventory\nProduct Bundle\nBatch\nPurchase Order\nPurchase Receipt\nPurchase Return\nSales Order\nDelivery Note\nSales Return\nStock Transfer\nStock Movement\nStocktake",
+   "reqd": 1
+  },
+  {
+   "default": "Pull Only",
+   "description": "当前已实现拉取；仅推送不会执行，双向目前只执行拉取方向",
+   "fieldname": "direction",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "同步方向",
+   "options": "Pull Only\nPush Only\nBidirectional\nDisabled",
+   "reqd": 1
+  },
+  {
+   "default": "360",
+   "description": "支持 1、5、15、30、60、360 分钟；生产环境建议订单 5 分钟、采购/库存 15 分钟、主数据 360 分钟",
+   "fieldname": "interval_minutes",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "间隔（分钟）",
+   "options": "1\n5\n15\n30\n60\n360",
+   "reqd": 1
+  },
+  {
+   "description": "首次执行时可从此时间开始；留空则使用连接配置中的资源起始日期",
+   "fieldname": "sync_start_at",
+   "fieldtype": "Datetime",
+   "label": "同步起始时间"
+  },
+    {
+      "fieldname": "last_enqueued_at",
+      "fieldtype": "Datetime",
+      "label": "最近排队时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "last_success_at",
+      "fieldtype": "Datetime",
+      "in_list_view": 1,
+      "label": "最近成功时间",
+      "read_only": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "last_pulled_count",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "最近拉取数量",
+      "read_only": 1
+    },
+    {
+      "fieldname": "last_status",
+      "fieldtype": "Select",
+      "label": "最近状态",
+   "options": "成功\n部分失败\n失败",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "consecutive_failures",
+   "fieldtype": "Int",
+   "label": "连续失败数",
+   "read_only": 1
+  },
+  {
+   "fieldname": "next_run_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "下次执行时间",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2026-08-30 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Sync Schedule",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

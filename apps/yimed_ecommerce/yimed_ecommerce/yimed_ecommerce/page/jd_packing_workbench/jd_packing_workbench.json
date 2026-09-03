@@ -1,0 +1,20 @@
+{
+ "creation": "2026-08-19 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "stock",
+ "idx": 0,
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "jd-packing-workbench",
+ "owner": "Administrator",
+ "page_name": "jd-packing-workbench",
+ "roles": [
+  {"role": "Stock Manager"},
+  {"role": "Stock User"},
+  {"role": "System Manager"}
+ ],
+ "standard": "Yes",
+ "title": "JD Packing Workbench"
+}

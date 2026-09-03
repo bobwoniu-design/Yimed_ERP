@@ -1,0 +1,31 @@
+{
+ "actions": [],
+ "autoname": "format:JD-SORT-{YYYY}-{#####}",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["import_batch", "purchase_order", "company", "status", "jd_sku", "platform_item", "stock_item", "stocking_pool_item", "warehouse", "batch_no", "required_qty", "sorted_qty", "shortage_qty", "shortage_reason"],
+ "fields": [
+  {"fieldname":"import_batch","fieldtype":"Link","label":"导入批次","options":"JD Purchase Import Batch","reqd":1,"in_standard_filter":1},
+  {"fieldname":"purchase_order","fieldtype":"Link","label":"京东采购单","options":"JD Purchase Order","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"company","fieldtype":"Link","label":"公司","options":"Company","reqd":1},
+  {"default":"草稿","fieldname":"status","fieldtype":"Select","label":"状态","options":"草稿\n已分拣\n短缺","reqd":1,"in_list_view":1},
+  {"fieldname":"jd_sku","fieldtype":"Data","label":"京东SKU","reqd":1,"in_list_view":1},
+  {"fieldname":"platform_item","fieldtype":"Link","label":"平台商品编码","options":"Item","reqd":1},
+  {"fieldname":"stock_item","fieldtype":"Link","label":"实际库存物料","options":"Item","reqd":1,"in_list_view":1},
+  {"fieldname":"stocking_pool_item","fieldtype":"Link","label":"备货池明细","options":"JD Stocking Pool Item","reqd":1},
+  {"fieldname":"warehouse","fieldtype":"Link","label":"仓库","options":"Warehouse","reqd":1},
+  {"fieldname":"batch_no","fieldtype":"Link","label":"批号","options":"Batch"},
+  {"fieldname":"required_qty","fieldtype":"Float","label":"该SKU物料需求数量","read_only":1},
+  {"fieldname":"sorted_qty","fieldtype":"Float","label":"实际分拣数量","reqd":1},
+  {"fieldname":"shortage_qty","fieldtype":"Float","label":"短缺数量","read_only":1},
+  {"fieldname":"shortage_reason","fieldtype":"Small Text","label":"短缺原因"}
+ ],
+ "module":"Yimed Ecommerce",
+ "name":"JD Sorting Allocation",
+ "permissions":[
+  {"role":"Stock Manager","read":1,"write":1,"create":1,"delete":1,"report":1},
+  {"role":"Stock User","read":1,"write":1,"create":1,"report":1},
+  {"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1}
+ ],
+ "sort_field":"creation","sort_order":"DESC","track_changes":1
+}

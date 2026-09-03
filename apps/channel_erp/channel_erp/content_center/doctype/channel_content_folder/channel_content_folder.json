@@ -1,0 +1,108 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "hash",
+  "creation": "2026-08-14 13:00:00.000000",
+  "default_view": "Tree",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "folder_name",
+    "parent_channel_content_folder",
+    "is_group",
+    "is_protected",
+    "lft",
+    "rgt",
+    "old_parent"
+  ],
+  "fields": [
+    {
+      "fieldname": "folder_name",
+      "fieldtype": "Data",
+      "in_global_search": 1,
+      "in_list_view": 1,
+      "label": "文件夹名称",
+      "reqd": 1
+    },
+    {
+      "fieldname": "parent_channel_content_folder",
+      "fieldtype": "Link",
+      "ignore_user_permissions": 1,
+      "label": "上级文件夹",
+      "options": "Channel Content Folder"
+    },
+    {
+      "default": "1",
+      "fieldname": "is_group",
+      "fieldtype": "Check",
+      "hidden": 1,
+      "label": "允许下级"
+    },
+    {
+      "default": "0",
+      "fieldname": "is_protected",
+      "fieldtype": "Check",
+      "label": "系统保护"
+    },
+    {
+      "fieldname": "lft",
+      "fieldtype": "Int",
+      "hidden": 1,
+      "label": "Lft",
+      "no_copy": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "rgt",
+      "fieldtype": "Int",
+      "hidden": 1,
+      "label": "Rgt",
+      "no_copy": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "old_parent",
+      "fieldtype": "Link",
+      "hidden": 1,
+      "label": "Old Parent",
+      "no_copy": 1,
+      "options": "Channel Content Folder"
+    }
+  ],
+  "is_tree": 1,
+  "links": [],
+  "modified": "2026-08-14 13:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Folder",
+  "naming_rule": "Random",
+  "nsm_parent_field": "parent_channel_content_folder",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "read": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "read": 1,
+      "role": "Content Center Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "read": 1,
+      "role": "Content Center User"
+    }
+  ],
+  "sort_field": "lft",
+  "sort_order": "ASC",
+  "states": [],
+  "title_field": "folder_name",
+  "track_changes": 1
+}

@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "autoname": "format:JD-CTN-{YYYY}-{#####}",
+ "creation": "2026-08-19 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["purchase_order", "carton_sequence", "total_cartons", "column_break_main", "destination_city", "packing_date", "sku_count", "verified", "allocations_section", "allocations", "components_section", "components", "print_section", "print_count", "last_printed_by", "last_printed_at", "remarks"],
+ "fields": [
+  {"fieldname": "purchase_order", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "京东采购单", "options": "JD Purchase Order", "reqd": 1},
+  {"fieldname": "carton_sequence", "fieldtype": "Int", "in_list_view": 1, "label": "箱序", "reqd": 1},
+  {"fieldname": "total_cartons", "fieldtype": "Int", "label": "总箱数", "read_only": 1},
+  {"fieldname": "column_break_main", "fieldtype": "Column Break"},
+  {"fetch_from": "purchase_order.destination_city", "fieldname": "destination_city", "fieldtype": "Data", "in_list_view": 1, "label": "目的城市", "read_only": 1},
+  {"default": "Today", "fieldname": "packing_date", "fieldtype": "Date", "label": "装箱日期", "reqd": 1},
+  {"default": "0", "fieldname": "sku_count", "fieldtype": "Int", "in_list_view": 1, "label": "SKU数量", "read_only": 1},
+  {"default": "0", "fieldname": "verified", "fieldtype": "Check", "in_list_view": 1, "label": "已复核"},
+  {"fieldname": "allocations_section", "fieldtype": "Section Break", "label": "箱内京东SKU"},
+  {"fieldname": "allocations", "fieldtype": "Table", "label": "箱内京东SKU", "options": "JD Carton Allocation", "reqd": 1},
+  {"fieldname": "components_section", "fieldtype": "Section Break", "label": "实际库存组件"},
+  {"fieldname": "components", "fieldtype": "Table", "label": "实际库存组件", "options": "JD Carton Item"},
+  {"fieldname": "print_section", "fieldtype": "Section Break", "label": "打印记录"},
+  {"default": "0", "fieldname": "print_count", "fieldtype": "Int", "label": "箱贴打印次数", "read_only": 1},
+  {"fieldname": "last_printed_by", "fieldtype": "Link", "label": "最后打印人", "options": "User", "read_only": 1},
+  {"fieldname": "last_printed_at", "fieldtype": "Datetime", "label": "最后打印时间", "read_only": 1},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "备注"}
+ ],
+ "links": [],
+ "modified": "2026-08-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Yimed Ecommerce",
+ "name": "JD Carton",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Stock Manager", "share": 1, "write": 1},
+  {"create": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Stock User", "write": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1}
+ ],
+ "sort_field": "purchase_order",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,146 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-08-14 22:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "asset",
+    "grantee",
+    "status",
+    "valid_from",
+    "valid_until",
+    "can_download",
+    "request_section",
+    "request_reason",
+    "requested_by",
+    "review_section",
+    "review_note",
+    "reviewed_by",
+    "reviewed_at",
+    "revoked_by",
+    "revoked_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "asset",
+      "fieldtype": "Data",
+      "label": "内容资产",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "grantee",
+      "fieldtype": "Data",
+      "label": "被授权用户",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "状态",
+      "options": "Pending\nActive\nRejected\nRevoked\nExpired",
+      "read_only": 1,
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "valid_from",
+      "fieldtype": "Datetime",
+      "label": "生效时间",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "valid_until",
+      "fieldtype": "Datetime",
+      "label": "失效时间",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "default": "1",
+      "fieldname": "can_download",
+      "fieldtype": "Check",
+      "label": "允许下载",
+      "read_only": 1
+    },
+    {
+      "fieldname": "request_section",
+      "fieldtype": "Section Break",
+      "label": "申请信息"
+    },
+    {
+      "fieldname": "request_reason",
+      "fieldtype": "Small Text",
+      "label": "申请理由",
+      "read_only": 1
+    },
+    {
+      "fieldname": "requested_by",
+      "fieldtype": "Data",
+      "label": "申请人",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "review_section",
+      "fieldtype": "Section Break",
+      "label": "审批与撤销"
+    },
+    {
+      "fieldname": "review_note",
+      "fieldtype": "Small Text",
+      "label": "审批意见",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reviewed_by",
+      "fieldtype": "Data",
+      "label": "审批人",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reviewed_at",
+      "fieldtype": "Datetime",
+      "label": "审批时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "revoked_by",
+      "fieldtype": "Data",
+      "label": "撤销人",
+      "read_only": 1
+    },
+    {
+      "fieldname": "revoked_at",
+      "fieldtype": "Datetime",
+      "label": "撤销时间",
+      "read_only": 1
+    }
+  ],
+  "links": [],
+  "modified": "2026-08-14 22:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Content Center",
+  "name": "Channel Content Access Grant",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "read": 1,
+      "role": "System Manager"
+    },
+    {
+      "read": 1,
+      "role": "Content Center Manager"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}
