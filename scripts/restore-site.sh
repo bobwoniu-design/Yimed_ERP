@@ -6,6 +6,9 @@ YIMED_REPO_ROOT="$(cd -- "$YIMED_SCRIPT_DIR/.." && pwd)"
 YIMED_BACKUP_DIR="${1:-}"
 YIMED_BENCH_DIR="${2:-$HOME/frappe-bench}"
 YIMED_SITE_NAME="${3:-yimed.local}"
+YIMED_DB_NAME="${YIMED_DB_NAME:-${YIMED_SITE_NAME//./_}}"
+YIMED_DB_USER="${YIMED_DB_USER:-$YIMED_DB_NAME}"
+YIMED_DB_PASSWORD="${YIMED_DB_PASSWORD:-}"
 
 fail() {
   printf '错误：%s\n' "$1" >&2
@@ -41,10 +44,10 @@ def newest(matches):
     return str(max(matches, key=lambda path: path.stat().st_mtime)) if matches else ""
 
 database = newest([p for p in files if p.name.endswith((".sql", ".sql.gz"))])
-private_files = newest([p for p in files if "private-files.tar" in p.name])
+private_files = newest([p for p in files if "private-files" in p.name and p.name.endswith((".tar", ".tar.gz", ".tgz"))])
 public_files = newest([
     p for p in files
-    if "files.tar" in p.name and "private-files.tar" not in p.name
+    if "files" in p.name and "private-files" not in p.name and p.name.endswith((".tar", ".tar.gz", ".tgz"))
 ])
 site_config = newest([p for p in files if "site_config_backup.json" in p.name])
 
@@ -70,10 +73,18 @@ printf '数据库：%s\n' "$YIMED_DATABASE_FILE"
 printf '公共附件：%s\n' "$YIMED_PUBLIC_FILES"
 printf '私有附件：%s\n' "$YIMED_PRIVATE_FILES"
 printf '加密配置：%s\n' "$YIMED_CONFIG_BACKUP"
-printf '\n创建站点时 Bench 会安全询问 MariaDB root 密码和管理员密码。\n'
+printf '\n创建站点时 Bench 会安全询问管理员密码。\n'
+if [[ -z "$YIMED_DB_PASSWORD" ]]; then
+  read -rsp "请输入 MariaDB 站点用户 $YIMED_DB_USER 的密码：" YIMED_DB_PASSWORD
+  printf '\n'
+fi
 
 cd "$YIMED_BENCH_DIR"
-"$YIMED_BENCH_BIN" new-site "$YIMED_SITE_NAME" --set-default
+"$YIMED_BENCH_BIN" new-site "$YIMED_SITE_NAME" --set-default \
+  --no-setup-db \
+  --db-name "$YIMED_DB_NAME" \
+  --db-user "$YIMED_DB_USER" \
+  --db-password "$YIMED_DB_PASSWORD"
 
 # Keep the newly-created Windows database connection settings. Only merge the
 # portable settings required to decrypt existing Password fields and load the

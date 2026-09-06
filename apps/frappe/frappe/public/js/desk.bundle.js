@@ -1,3 +1,4 @@
+import "./jquery-bootstrap.js";
 import "./frappe/provide.js";
 import "./frappe/translate.js";
 import "./frappe/class.js";

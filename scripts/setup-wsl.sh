@@ -49,7 +49,13 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   libffi-dev libssl-dev libmariadb-dev libmariadb-dev-compat \
   libjpeg-dev zlib1g-dev liblcms2-dev libwebp-dev \
   mariadb-client mariadb-server redis-server \
-  xvfb libfontconfig wkhtmltopdf
+  xvfb libfontconfig1
+
+if [[ "$(apt-cache policy wkhtmltopdf | awk '/Candidate:/ {print $2}')" != "(none)" ]]; then
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y wkhtmltopdf
+else
+  printf '提示：当前 Ubuntu 软件源没有 wkhtmltopdf，已跳过。需要旧式 PDF 打印时可后续单独安装 wkhtmltox。\n'
+fi
 
 YIMED_MARIADB_CONFIG="$(mktemp)"
 cat > "$YIMED_MARIADB_CONFIG" <<'EOF'
@@ -72,7 +78,12 @@ else
   sudo service redis-server restart
 fi
 
-if ! command -v uv >/dev/null 2>&1; then
+YIMED_UV_BIN="$(command -v uv || true)"
+if [[ -z "$YIMED_UV_BIN" && -x "$HOME/.local/bin/uv" ]]; then
+  YIMED_UV_BIN="$HOME/.local/bin/uv"
+fi
+
+if [[ -z "$YIMED_UV_BIN" ]]; then
   printf '安装 uv 和 Python %s……\n' "$YIMED_PYTHON_VERSION"
   curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
@@ -81,6 +92,7 @@ if [[ -z "$YIMED_UV_BIN" && -x "$HOME/.local/bin/uv" ]]; then
   YIMED_UV_BIN="$HOME/.local/bin/uv"
 fi
 [[ -x "$YIMED_UV_BIN" ]] || fail "uv 安装失败。"
+export PATH="$(dirname "$YIMED_UV_BIN"):$PATH"
 "$YIMED_UV_BIN" python install "$YIMED_PYTHON_VERSION"
 YIMED_PYTHON_BIN="$("$YIMED_UV_BIN" python find "$YIMED_PYTHON_VERSION")"
 
@@ -151,6 +163,21 @@ done
 
 cd "$YIMED_BENCH_DIR"
 "$YIMED_BENCH_BIN" setup requirements --dev
+mkdir -p "$YIMED_REPO_ROOT/sites"
+ln -sf "$YIMED_BENCH_DIR/sites/common_site_config.json" \
+  "$YIMED_REPO_ROOT/sites/common_site_config.json"
+(
+  cd "$YIMED_REPO_ROOT/apps/frappe"
+  yarn install --frozen-lockfile
+)
+(
+  cd "$YIMED_REPO_ROOT/apps/erpnext"
+  yarn install --frozen-lockfile
+)
+(
+  cd "$YIMED_REPO_ROOT/apps/erpnext/banking"
+  yarn install --frozen-lockfile
+)
 "$YIMED_BENCH_BIN" build
 "$YIMED_BENCH_BIN" set-config -g webserver_port 8000
 "$YIMED_BENCH_BIN" set-config -g socketio_port 9000

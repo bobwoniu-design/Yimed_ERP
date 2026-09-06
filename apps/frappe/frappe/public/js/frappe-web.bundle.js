@@ -20,6 +20,7 @@ import "./frappe/model/meta.js";
 import "./frappe/model/model.js";
 import "./frappe/model/perm.js";
 
+import "./jquery-bootstrap.js";
 import "./bootstrap-4-web.bundle";
 
 import "../../website/js/website.js";

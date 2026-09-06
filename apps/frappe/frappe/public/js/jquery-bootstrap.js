@@ -15,6 +15,13 @@ import Util from "bootstrap/js/dist/util";
 window.jQuery = jQuery;
 window.$ = jQuery;
 
+for (const plugin of [Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, Scrollspy, Tab, Toast, Tooltip]) {
+	if (plugin?.NAME && plugin?._jQueryInterface) {
+		jQuery.fn[plugin.NAME] = plugin._jQueryInterface;
+		jQuery.fn[plugin.NAME].Constructor = plugin;
+	}
+}
+
 export {
 	Util,
 	Alert,
