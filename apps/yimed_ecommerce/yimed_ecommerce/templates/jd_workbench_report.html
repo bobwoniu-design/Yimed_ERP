@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><style>
+@page { size: A4 landscape; margin: 8mm 8mm 12mm; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #20252a; font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; font-size: 9pt; }
+.print-format { page-width:297mm; page-height:210mm; orientation:Portrait; margin:0; padding:0; }
+h1 { font-size:18pt; text-align:center; margin:0 0 3mm; }
+.meta { display:flex; justify-content:space-between; margin-bottom:2mm; font-size:8pt; }
+h2 { font-size:11pt; margin:4mm 0 1.5mm; break-after:avoid; }
+.note { color:#555; margin:0 0 2mm; font-size:8pt; }
+section { margin-bottom:5mm; }
+section.matrix + section.matrix { break-before:page; }
+section.matrix th, section.matrix td { padding:1mm; line-height:1.25; }
+tr.group { background:#e9edf0; font-weight:600; break-after:avoid; }
+tbody tr:last-child { break-after:avoid; }
+table { width:100%; table-layout:fixed; border-collapse:collapse; }
+thead { display:table-header-group; }
+tr { break-inside:avoid; }
+th,td { border:0.2mm solid #949ba2; padding:1.5mm 1.2mm; line-height:1.4; vertical-align:middle; overflow-wrap:anywhere; white-space:pre-line; }
+th { background:#e9edf0; font-weight:600; text-align:left; }
+td.numeric { text-align:right; }
+tr.parent { background:#f0f3f5; font-weight:600; break-after:avoid; }
+.signatures { display:flex; justify-content:space-between; padding-top:4mm; break-inside:avoid; font-size:9pt; }
+</style></head><body><div class="print-format">
+<h1>{{ title | e }}</h1>
+<div class="meta"><span>公司：{{ (batch.company or '') | e }}</span><span>批次：{{ batch.name | e }}</span></div>
+<div class="meta"><span>{{ source_note | e }}</span><span>打印时间：{{ printed_at | e }}</span></div>
+{% for section in sections %}<section{% if title == "商品分拣矩阵单" %} class="matrix"{% endif %}>
+<h2>{{ section.heading | e }}</h2><p class="note">{{ section.note | e }}</p>
+<table><colgroup>{% for c in section.columns %}<col style="width:{{ c.width_percent }}%">{% endfor %}</colgroup>
+<thead><tr>{% for c in section.columns %}<th>{{ c.label | e }}</th>{% endfor %}</tr></thead><tbody>
+{% for row in section.rows %}{% if row.get("_group") %}<tr class="group"><td colspan="{{ section.columns|length }}">{{ row["_group"] | e }}</td></tr>{% else %}<tr{% if row.get('_parent') %} class="parent"{% endif %}>{% for c in section.columns %}<td{% if c.fieldtype == 'Float' %} class="numeric"{% endif %}>{{ format_cell(row.get(c.fieldname), c.fieldtype) | e }}</td>{% endfor %}</tr>{% endif %}
+{% else %}<tr><td colspan="{{ section.columns|length }}">暂无明细</td></tr>{% endfor %}
+</tbody></table>
+<div class="signatures"><span>操作人：________________</span><span>复核人：________________</span><span>日期：________________</span></div>
+</section>{% endfor %}
+</div></body></html>

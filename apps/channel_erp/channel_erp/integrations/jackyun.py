@@ -95,9 +95,58 @@ STOCK_MOVEMENT_OUTBOUND_TYPES = {
 
 DIRECT_KEYS = ["data", "items", "list", "rows", "result", "records"]
 
-DEFAULT_TIMEOUT_S = 15
+DEFAULT_TIMEOUT_S = 90
 MAX_RETRIES = 3
 RETRY_BASE_S = 0.4
+
+# ---------------------------------------------------------------------------
+# 额度不足熔断：检测到吉客云返回“额度不足”（0130000609）时写入 Redis 标志，
+# 在冷却时间内跳过所有定时同步，避免无效调用继续消耗额度并刷爆错误日志。
+QUOTA_CIRCUIT_KEY = "channel_erp:jackyun:quota_circuit_until"
+DEFAULT_QUOTA_CIRCUIT_HOURS = 2
+
+
+def _is_quota_exhausted_message(message):
+    text = str(message or "")
+    return "0130000609" in text or "额度不足" in text
+
+
+def trip_quota_circuit(hours=None):
+    """Trip the quota circuit breaker with a configurable cooldown window."""
+    hours = hours or frappe.conf.get("jackyun_quota_circuit_hours") or DEFAULT_QUOTA_CIRCUIT_HOURS
+    until = datetime.now() + timedelta(hours=hours)
+    frappe.cache().set_value(
+        QUOTA_CIRCUIT_KEY, until.timestamp(), expires_in_sec=int(hours * 3600)
+    )
+    frappe.logger("channel_erp.scheduler").warning(
+        "JackYun quota circuit tripped for %s hours (until %s)", hours, until
+    )
+
+
+def is_quota_circuit_open(now=None):
+    try:
+        until = frappe.cache().get_value(QUOTA_CIRCUIT_KEY)
+    except Exception:
+        return False
+    if not until:
+        return False
+    current = (now or datetime.now()).timestamp()
+    return current < float(until)
+
+
+def clear_quota_circuit():
+    frappe.cache().delete_value(QUOTA_CIRCUIT_KEY)
+    frappe.logger("channel_erp.scheduler").info("JackYun quota circuit cleared")
+    return {"ok": True}
+
+
+@frappe.whitelist()
+def reset_quota_circuit():
+    """额度充值后手动解除熔断（管理员权限）。"""
+    if frappe.session.user != "Administrator":
+        frappe.only_for("System Manager")
+    return clear_quota_circuit()
+
 PAGE_SIZE = 100
 PACKAGE_PAGE_SIZE = 200
 STOCK_PAGE_SIZE = 200
@@ -496,15 +545,50 @@ def _jackyun_name(value):
     return name[:140] or None
 
 
-def _ensure_item_group(name):
+def _ensure_item_group(name, parent_item_group="All Item Groups"):
+    name = frappe.utils.cstr(name).strip()
     if not name:
         return "All Item Groups"
+    parent_item_group = frappe.utils.cstr(parent_item_group).strip() or "All Item Groups"
     if frappe.db.exists("Item Group", name):
+        doc = frappe.get_doc("Item Group", name)
+        if doc.parent_item_group != parent_item_group:
+            doc.parent_item_group = parent_item_group
+            doc.save(ignore_permissions=True)
         return name
     frappe.get_doc(
-        {"doctype": "Item Group", "item_group_name": name, "parent_item_group": "All Item Groups"}
+        {
+            "doctype": "Item Group",
+            "item_group_name": name,
+            "parent_item_group": parent_item_group,
+            "is_group": 0,
+        }
     ).insert(ignore_permissions=True)
     return name
+
+
+def _sync_category_item_group(category_doc):
+    """把 Jackyun Goods Category 落到 ERPNext Item Group 树。
+
+    Item Group 名使用吉客云末级分类名（与 SKU 的 cateName 对齐），
+    通过 parent_category 递归建立 parent_item_group 层级；
+    有子分类的节点标记为 is_group=1。
+    """
+    category_name = frappe.utils.cstr(category_doc.get("category_name")).strip()
+    if not category_name:
+        return None
+
+    parent_group = "All Item Groups"
+    if category_doc.get("parent_category"):
+        parent_name = frappe.db.get_value(
+            "Jackyun Goods Category", category_doc.parent_category, "category_name"
+        )
+        parent_name = frappe.utils.cstr(parent_name).strip()
+        if parent_name:
+            parent_group = parent_name
+            frappe.db.set_value("Item Group", parent_group, "is_group", 1)
+
+    return _ensure_item_group(category_name, parent_group)
 
 
 def _ensure_uom(name):
@@ -576,6 +660,12 @@ GOODS_SOURCES = {
     "item_group": ["cateName", "categoryName"],
     "stock_uom": ["unitName", "unit", "baseUnitName"],
     "description": ["goodsDesc", "goodsAlias", "spec"],
+    # 医疗器械资质信息（吉客云自定义字段槽位）：
+    # goodsField3=注册证号、goodsField7/4=生产厂家（两槽位内容相同，7 覆盖略广）、
+    # skuName=规格名称（如 "YK-I型 500mL、容量允差为±5%"）
+    "custom_jd_registration": ["goodsField3"],
+    "custom_jd_manufacturer": ["goodsField7", "goodsField4"],
+    "custom_jd_specification": ["skuName"],
 }
 
 
@@ -658,12 +748,16 @@ class JackYunAdapter(BaseAdapter):
                     if code != "200":
                         message = payload.get("msg") or "未知错误"
                         sub_code = payload.get("subCode") or ""
+                        if _is_quota_exhausted_message(f"{message} {sub_code}"):
+                            trip_quota_circuit()
                         raise JikeyunError(
                             f"吉客云接口 {method} 查询失败：{message} {sub_code}".strip(),
                             "PARAMETER",
                         )
                 err = classify_business_error(payload)
                 if err:
+                    if _is_quota_exhausted_message(err[1]):
+                        trip_quota_circuit()
                     raise JikeyunError(err[1], err[0])
 
                 context_id = extract_context_id(payload)
@@ -1837,6 +1931,22 @@ class JackYunAdapter(BaseAdapter):
             brand = _ensure_brand(_pick(raw, ["brandName"]))
             if brand:
                 mapped["brand"] = brand
+            # 辅助单位（goodsUnit）：写入 Item.uoms 换算表，装箱页按"箱"换算率
+            # 自动计算整箱数与余数（1箱 = countRate 个基础单位 → conversion_factor）。
+            uoms_rows = []
+            for unit in raw.get("goodsUnit") or []:
+                unit_name = frappe.utils.cstr(unit.get("unitName")).strip()
+                factor = frappe.utils.flt(unit.get("countRate"))
+                if not unit_name or factor <= 0:
+                    continue
+                ensured = _ensure_uom(unit_name)
+                if not ensured:
+                    continue
+                if any(row.get("uom") == ensured for row in uoms_rows):
+                    continue
+                uoms_rows.append({"uom": ensured, "conversion_factor": factor})
+            if uoms_rows:
+                mapped["uoms"] = uoms_rows
             return mapped
 
         if resource == "Product Bundle":
@@ -2358,6 +2468,7 @@ class JackYunAdapter(BaseAdapter):
             doc = frappe.get_doc({"doctype": "Jackyun Goods Category", **values})
             doc.insert(ignore_permissions=True)
         self.remember_mapping("Category", external_id, "Jackyun Goods Category", doc.name)
+        _sync_category_item_group(doc)
         return doc.name, "created" if created else "updated"
 
     def _upsert_warehouse(self, mapped):
@@ -3649,7 +3760,10 @@ class JackYunAdapter(BaseAdapter):
         rows_by_item = {}
         for item_row in values.get("items") or []:
             item_code = self._resolve_order_item(item_row)
-            key = (item_code, warehouse)
+            batch_no = self._resolve_transaction_batch(
+                item_code, item_row.get("batchNo")
+            )
+            key = (item_code, warehouse, batch_no or "")
             row = rows_by_item.setdefault(
                 key,
                 {
@@ -3657,6 +3771,8 @@ class JackYunAdapter(BaseAdapter):
                     "warehouse": warehouse,
                     "qty": 0,
                     "valuation_rate": 0,
+                    "batch_no": batch_no,
+                    **({"use_serial_batch_fields": 1} if batch_no else {}),
                 },
             )
             row["qty"] += frappe.utils.flt(item_row.get("takeQuan"))
@@ -3773,6 +3889,20 @@ class JackYunAdapter(BaseAdapter):
             frappe.throw(f"出库单 {values.get('delivery_no') or external_id} 缺少有效仓库")
 
         source_sales_order = self._resolve_delivery_source_order(values)
+        # 回写闭环：ERPNext 生成并已推送吉客云的销售订单，其吉客云出库单回拉时
+        # 不再重复建单扣库存（ERP 出库单在回写时已提交），记映射直接返回已有出库单
+        if source_sales_order and (
+            frappe.db.get_value("Sales Order", source_sales_order, "custom_connector_source") == "ERPNext"
+        ):
+            existing_dn = frappe.get_all(
+                "Delivery Note Item",
+                filters={"against_sales_order": source_sales_order, "docstatus": 1},
+                pluck="parent",
+                limit=1,
+            )
+            if existing_dn:
+                self.remember_mapping("Delivery Note", external_id, "Delivery Note", existing_dn[0])
+                return existing_dn[0], "skipped"
         customer = self._resolve_delivery_customer(values, source_sales_order)
         source_rates = {}
         source_rows = {}

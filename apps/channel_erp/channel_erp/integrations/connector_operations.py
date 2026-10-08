@@ -386,6 +386,101 @@ def _update_reference_status(msg):
         return
 
 
+def _auto_audit_settings(msg):
+    """Resolve the Jackyun Connection audit switches behind a queue message."""
+    fields = ["auto_audit_outbound", "audit_operator", "outbound_test_mode"]
+    if msg.get("connector_connection"):
+        credential = frappe.db.get_value(
+            "Connector Connection",
+            msg.connector_connection,
+            ["credential_doctype", "credential_name"],
+            as_dict=True,
+        )
+        if (
+            credential
+            and credential.credential_doctype == "Jackyun Connection"
+            and credential.credential_name
+        ):
+            return frappe.db.get_value(
+                "Jackyun Connection", credential.credential_name, fields, as_dict=True
+            )
+        return None
+    if msg.get("connection"):
+        return frappe.db.get_value(
+            "Jackyun Connection", msg.connection, fields, as_dict=True
+        )
+    return None
+
+
+def _maybe_enqueue_auto_audit(msg):
+    """Queue an oms.trade.audit.pass push once a Sales Order Create is acknowledged.
+
+    Idempotency relies on the stable ``AUTO-AUDIT:{tradeNo}`` operation
+    identity, so the queue worker, a probe recovery and any future retry path
+    all converge on a single Audit message per remote trade.
+    """
+    if msg.resource != "Sales Order" or msg.operation != "Create":
+        return
+    if msg.status != "Succeeded":
+        return
+    trade_no = frappe.utils.cstr(msg.external_id).strip()
+    if not trade_no:
+        return
+    try:
+        settings = _auto_audit_settings(msg)
+        if not settings or not frappe.utils.cint(settings.auto_audit_outbound):
+            return
+        if frappe.utils.cint(settings.outbound_test_mode):
+            # Test orders are cleaned up by cancellation; auditing them would
+            # drive the throwaway order into JackYun WMS processing.
+            return
+        payload = frappe.parse_json(msg.payload or "{}") or {}
+        online_no = frappe.utils.cstr(
+            (payload.get("tradeOrder") or {}).get("onlineTradeNo") or ""
+        )
+        if online_no.startswith("ERPTEST-"):
+            return
+        if frappe.db.exists(
+            "Connector Outbound Message",
+            {
+                "platform": msg.platform or "jackyun",
+                "resource": "Sales Order",
+                "operation": "Cancel",
+                "external_id": trade_no,
+                "status": "Succeeded",
+            },
+        ):
+            return
+        from channel_erp.integrations.jackyun_outbound import audit_payload
+
+        enqueue_outbound_internal(
+            connector_connection=msg.get("connector_connection"),
+            connection=None if msg.get("connector_connection") else msg.get("connection"),
+            resource="Sales Order",
+            operation="Audit",
+            reference_doctype=msg.reference_doctype,
+            reference_name=msg.reference_name,
+            external_id=trade_no,
+            payload=audit_payload(trade_no, settings.audit_operator),
+            source_system="erpnext",
+            source_event_id=(
+                f"Sales Order:{msg.reference_name or trade_no}:auto-audit:{trade_no}"
+            ),
+            operation_identity=f"AUTO-AUDIT:{trade_no}",
+            origin_message=msg.name,
+        )
+    except Exception:
+        # The Create already succeeded; audit chaining is best-effort and must
+        # never disturb the queue's receipt handling.
+        try:
+            frappe.log_error(
+                title="吉客云自动审核入队失败",
+                message=frappe.get_traceback(),
+            )
+        except Exception:
+            pass
+
+
 def evaluate_conflict(policy, source_modified_at, erp_modified_at, last_synced_at):
     """Return the deterministic action when both sides changed after last sync."""
     if not source_modified_at or not erp_modified_at or not last_synced_at:
@@ -716,6 +811,7 @@ def process_outbound_queue(limit=50):
         else:
             msg.save(ignore_permissions=True)
         _update_reference_status(msg)
+        _maybe_enqueue_auto_audit(msg)
         stats["processed"] += 1
         frappe.db.commit()
     return stats
@@ -768,4 +864,5 @@ def probe_uncertain_outbound(name):
         msg.probe_data = _json({"error": str(exc)})
     msg.save(ignore_permissions=True)
     _update_reference_status(msg)
+    _maybe_enqueue_auto_audit(msg)
     return msg.as_dict()

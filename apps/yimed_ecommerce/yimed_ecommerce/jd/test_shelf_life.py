@@ -29,7 +29,7 @@ class TestJDShelfLife(IntegrationTestCase):
 		self.assertGreaterEqual(row.remaining_shelf_life_percent, 66.6667)
 		self.assertEqual(row.shelf_life_status, "符合")
 
-	def test_rejects_batch_below_two_thirds_remaining(self):
+	def test_records_batch_below_two_thirds_without_blocking_packing(self):
 		item = make_item("_Test JD Batch Rejected Item", is_stock_item=1, has_batch_no=1)
 		batch_name = "_TEST-JD-BATCH-REJECTED"
 		if not frappe.db.exists("Batch", batch_name):
@@ -44,5 +44,6 @@ class TestJDShelfLife(IntegrationTestCase):
 			).insert()
 
 		row = frappe._dict(batch_no=batch_name, stock_item=item)
-		with self.assertRaises(frappe.ValidationError):
-			apply_batch_shelf_life(row, date(2026, 6, 1))
+		apply_batch_shelf_life(row, date(2026, 6, 1))
+		self.assertLess(row.remaining_shelf_life_percent, 66.6667)
+		self.assertEqual(row.shelf_life_status, "不符合")

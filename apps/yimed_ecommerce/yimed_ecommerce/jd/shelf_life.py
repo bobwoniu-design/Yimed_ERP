@@ -10,7 +10,7 @@ WARNING_REMAINING_SHELF_LIFE_PERCENT = 70.0
 
 
 def apply_batch_shelf_life(row, posting_date=None) -> None:
-	"""Fetch canonical Batch dates and enforce JD's remaining two-thirds rule."""
+	"""Fetch canonical Batch dates and record shelf-life status without a ratio gate."""
 	if not row.batch_no:
 		row.manufacturing_date = None
 		row.expiry_date = None
@@ -51,11 +51,8 @@ def apply_batch_shelf_life(row, posting_date=None) -> None:
 	row.remaining_shelf_life_percent = flt(remaining_days * 100 / total_days, 2)
 	if row.remaining_shelf_life_percent < MIN_REMAINING_SHELF_LIFE_PERCENT:
 		row.shelf_life_status = "不符合"
-		frappe.throw(
-			_("Batch {0} has only {1}% shelf life remaining; JD requires at least two thirds.").format(
-				frappe.bold(row.batch_no), row.remaining_shelf_life_percent
-			)
-		)
+		# 剩余效期比例仅记录状态，不拦截生成、修改或确认装箱。
+		return
 	row.shelf_life_status = (
 		"临期预警"
 		if row.remaining_shelf_life_percent < WARNING_REMAINING_SHELF_LIFE_PERCENT

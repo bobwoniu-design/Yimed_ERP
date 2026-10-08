@@ -6,6 +6,24 @@ from yimed_ecommerce.jd.test_product_bundle import make_item
 
 
 class TestJDPacking(IntegrationTestCase):
+	def setUp(self):
+		# 固定名测试数据：transfer/invariants 测试中的 Stock Entry submit 会 commit，
+		# 破坏 IntegrationTestCase 的事务回滚，残留同名 PO 导致本类测试 Duplicate。
+		super().setUp()
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD-PO-%"]})
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD-EXCESS%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD Packing%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD Excess%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD Duplicate SKU%"]})
+		frappe.db.commit()
 	def test_verification_requires_exact_total_across_duplicate_sku_rows(self):
 		company = frappe.db.get_value("Company", {}, "name")
 		item = make_item("_Test JD Complete Packing Item", is_stock_item=1)

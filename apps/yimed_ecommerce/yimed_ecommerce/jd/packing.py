@@ -20,6 +20,27 @@ def get_packing_workbench(purchase_order: str):
 	po.check_permission("read")
 	items = _get_aggregated_order_items(po)
 	packed_by_sku = _get_packed_qty_by_sku(po.name)
+	# 备货池批次（同一物料可能分布在多个批次，展示给操作员）
+	# 备货池按 stock_item（组合装已拆开）存批次，需经组件展开映射回京东 SKU
+	batches_by_sku: dict[str, list[str]] = {}
+	pool_batches: dict[str, list[str]] = {}
+	if po.import_batch:
+		for row in frappe.get_all(
+			"JD Stocking Pool Item",
+			filters={"import_batch": po.import_batch, "batch_no": ["is", "set"]},
+			fields=["stock_item", "batch_no"],
+			order_by="creation",
+		):
+			if row.batch_no and row.batch_no not in pool_batches.setdefault(row.stock_item, []):
+				pool_batches[row.stock_item].append(row.batch_no)
+	for item in items:
+		seen: list[str] = []
+		for component in expand_platform_item(item["platform_item"], 1):
+			for bn in pool_batches.get(component.stock_item, []):
+				if bn not in seen:
+					seen.append(bn)
+		if seen:
+			batches_by_sku[item["jd_sku"]] = seen
 	item_rows = []
 	for item in items:
 		packed_qty = flt(packed_by_sku.get(item["jd_sku"]), 6)
@@ -31,6 +52,7 @@ def get_packing_workbench(purchase_order: str):
 				**item,
 				"packed_qty": packed_qty,
 				"remaining_qty": remaining_qty,
+				"stock_batches": "、".join(batches_by_sku.get(item["jd_sku"], [])) or None,
 				"whole_carton_uom": whole_carton["uom"] if whole_carton else None,
 				"whole_carton_conversion_factor": whole_carton["conversion_factor"] if whole_carton else 0,
 				"whole_carton_qty": whole_qty,
@@ -117,8 +139,17 @@ def get_packing_workbench(purchase_order: str):
 
 
 @frappe.whitelist()
-def generate_whole_carton_suggestions(purchase_order: str, packing_date: str | None = None):
-	"""Create one single-SKU carton for every complete native Box/箱 UOM remaining."""
+def generate_whole_carton_suggestions(
+	purchase_order: str,
+	packing_date: str | None = None,
+	selected_skus: str | list | None = None,
+):
+	"""Create one single-SKU carton for every complete native Box/箱 UOM remaining.
+
+	selected_skus：传入时只处理勾选的京东 SKU（自动装整箱按勾选执行）；
+	不传时处理全部商品（原"整箱自动生成"行为）。
+	零头（不足整箱）与未配置整箱单位的物料不做处理，留待手动装箱。
+	"""
 	po = _get_locked_po_for_packing(purchase_order)
 	items = _get_aggregated_order_items(po)
 	packed_by_sku = _get_packed_qty_by_sku(po.name)
@@ -131,9 +162,19 @@ def generate_whole_carton_suggestions(purchase_order: str, packing_date: str | N
 	created = []
 	results = []
 
+	# 解析勾选 SKU
+	if isinstance(selected_skus, str):
+		try:
+			selected_skus = json.loads(selected_skus)
+		except (TypeError, ValueError):
+			selected_skus = [s for s in selected_skus.split(",") if s]
+	selected_set = set(selected_skus) if selected_skus else None
+
 	for item in items:
 		packed_qty = flt(packed_by_sku.get(item["jd_sku"]), 6)
 		remaining_qty = flt(item["purchase_qty"] - packed_qty, 6)
+		if selected_set is not None and item["jd_sku"] not in selected_set:
+			continue
 		if remaining_qty <= 0:
 			results.append({"jd_sku": item["jd_sku"], "status": "无需装箱", "remainder_qty": 0})
 			continue
@@ -144,7 +185,7 @@ def generate_whole_carton_suggestions(purchase_order: str, packing_date: str | N
 				{
 					"jd_sku": item["jd_sku"],
 					"status": "未配置整箱单位",
-					"message": _("Item {0} has no Box/箱 UOM conversion.").format(item["platform_item"]),
+					"message": _("物料 {0} 未配置有效的整箱单位换算，请在物料档案中设置每箱数量后重试。").format(item["platform_item"]),
 					"remainder_qty": remaining_qty,
 				}
 			)
@@ -168,10 +209,10 @@ def generate_whole_carton_suggestions(purchase_order: str, packing_date: str | N
 								"platform_item": item["platform_item"],
 								"qty": qty_per_carton,
 								"uom": item["purchase_uom"],
-							}
-						],
-						{},
-					)
+								}
+								],
+								_pool_batch_map(po.import_batch),
+								)
 				)
 			next_sequence += full_cartons
 
@@ -189,8 +230,6 @@ def generate_whole_carton_suggestions(purchase_order: str, packing_date: str | N
 
 	if created:
 		update_carton_totals(po.name)
-		po.db_set("packing_status", "装箱中")
-		po.db_set("status", "装箱中")
 	return {
 		"purchase_order": po.name,
 		"cartons": created,
@@ -234,15 +273,30 @@ def update_carton_allocations(carton: str, allocations: str | list[dict]):
 
 	# JDCarton.validate rebuilds components with expand_platform_item and preserves
 	# batch numbers from the still-present old component rows by SKU + stock item.
+	# 重建前先按备货池给空批次组件填批次，新加入的 SKU 也能立即带出批次。
+	pool_batches = _pool_batch_map(po.import_batch)
+	if pool_batches:
+		existing = {
+			(row.jd_sku, row.stock_item): row.batch_no
+			for row in carton_doc.components or []
+		}
+		provisional = []
+		for jd_sku, qty in new_by_sku.items():
+			order_item = get_order_item(po, jd_sku)
+			for component in expand_platform_item(order_item.platform_item, qty):
+				batch = existing.get((jd_sku, component.stock_item)) or pool_batches.get(component.stock_item) or ""
+				provisional.append(
+					{
+						"jd_sku": jd_sku,
+						"platform_item": order_item.platform_item,
+						"stock_item": component.stock_item,
+						"batch_no": batch,
+					}
+				)
+		carton_doc.set("components", provisional)
 	carton_doc.set("allocations", new_allocations)
 	carton_doc.save()
 	update_carton_totals(po.name)
-	frappe.db.set_value(
-		"JD Purchase Order",
-		po.name,
-		{"packing_status": "装箱中", "status": "装箱中"},
-		update_modified=False,
-	)
 	return _carton_result(carton_doc)
 
 
@@ -348,12 +402,6 @@ def copy_carton(
 		for offset in range(repeat_count_int)
 	]
 	update_carton_totals(po.name)
-	frappe.db.set_value(
-		"JD Purchase Order",
-		po.name,
-		{"packing_status": "装箱中", "status": "装箱中"},
-		update_modified=False,
-	)
 	return {
 		"purchase_order": po.name,
 		"source_carton": carton_doc.name,
@@ -413,8 +461,6 @@ def create_equal_cartons(
 		remaining -= carton_qty
 
 	update_carton_totals(po.name)
-	po.db_set("packing_status", "装箱中")
-	po.db_set("status", "装箱中")
 	return {"cartons": created, "carton_count": carton_count, "remainder_qty": flt(total_qty % qty_per_carton)}
 
 
@@ -458,13 +504,14 @@ def create_mixed_cartons(
 
 	validate_sequence_range(po.name, start_sequence, repeat_count)
 	batches = parse_batch_map(batch_map)
+	# 手填批次优先，未填的组件用备货池选定的批次兜底
+	for stock_item, batch_no in _pool_batch_map(po.import_batch).items():
+		batches.setdefault(stock_item, batch_no)
 	created = [
 		create_carton(po, start_sequence + offset, packing_date, allocations, batches)
 		for offset in range(repeat_count)
 	]
 	update_carton_totals(po.name)
-	po.db_set("packing_status", "装箱中")
-	po.db_set("status", "装箱中")
 	return {"cartons": created, "carton_count": repeat_count}
 
 
@@ -484,16 +531,14 @@ def assign_batch_to_cartons(
 	cartons = frappe.get_all("JD Carton", filters=filters, pluck="name", order_by="carton_sequence")
 	for carton_name in cartons:
 		frappe.db.sql("select name from `tabJD Carton` where name = %s for update", carton_name)
-	verified = frappe.db.get_value("JD Carton", {"name": ["in", cartons], "verified": 1}, "name") if cartons else None
-	if verified:
-		frappe.throw(
-			_("Carton {0} is verified. Undo verification before assigning a batch.").format(
-				frappe.bold(verified)
-			)
-		)
 	updated_rows = 0
 	for carton_name in cartons:
 		carton = frappe.get_doc("JD Carton", carton_name)
+		if carton.verified:
+			# 补批次自动退回编辑态（无独立确认环节），装满后由自动确认恢复
+			carton.verified = 0
+			carton.flags.jd_allow_rework = True
+			carton.save()
 		changed = False
 		for row in carton.components:
 			if row.stock_item != stock_item or (jd_sku and row.jd_sku != jd_sku):
@@ -507,7 +552,38 @@ def assign_batch_to_cartons(
 			carton.save()
 	if not updated_rows:
 		frappe.throw(_("No matching carton component rows were found."))
+	update_carton_totals(purchase_order)
 	return {"updated_rows": updated_rows, "carton_count": len(cartons)}
+
+
+@frappe.whitelist()
+def undo_verify_cartons(
+	purchase_order: str,
+	start_sequence: int | None = None,
+	end_sequence: int | None = None,
+):
+	"""撤销装箱确认：把已确认箱退回编辑态（受控返工）。
+
+	前提：未生成转移单。撤销后可重新调整箱内商品/数量，再重新"确认装箱"。
+	"""
+	po = _get_locked_po_for_packing(purchase_order)
+	filters = _carton_filters(purchase_order, start_sequence, end_sequence)
+	cartons = frappe.get_all("JD Carton", filters=filters, pluck="name", order_by="carton_sequence")
+	if not cartons:
+		frappe.throw(_("No cartons were found."))
+	undone = 0
+	for carton_name in cartons:
+		frappe.db.sql("select name from `tabJD Carton` where name = %s for update", carton_name)
+		carton = frappe.get_doc("JD Carton", carton_name)
+		if not carton.verified:
+			continue
+		carton.verified = 0
+		carton.flags.jd_allow_rework = True
+		carton.save()
+		undone += 1
+	if undone:
+		po.db_set({"packing_status": "装箱中", "status": "装箱中"})
+	return {"undone_count": undone}
 
 
 @frappe.whitelist()
@@ -609,7 +685,7 @@ def get_packing_quantity_discrepancies(purchase_order: str) -> list[dict]:
 
 
 @frappe.whitelist()
-def get_carton_names(purchase_order: str):
+def get_carton_names(purchase_order: str, cartons=None):
 	po = frappe.get_doc("JD Purchase Order", purchase_order)
 	po.check_permission("read")
 	names = frappe.get_all(
@@ -618,6 +694,13 @@ def get_carton_names(purchase_order: str):
 		pluck="name",
 		order_by="carton_sequence",
 	)
+	if cartons is not None:
+		selected = frappe.parse_json(cartons) if isinstance(cartons, str) else cartons
+		if not isinstance(selected, list) or any(not isinstance(name, str) for name in selected):
+			frappe.throw(_("Cartons must be a list of carton names."))
+		if set(selected) - set(names):
+			frappe.throw(_("Selected cartons do not belong to this Purchase Order."))
+		names = [name for name in names if name in set(selected)]
 	for name in names:
 		current_count = frappe.db.get_value("JD Carton", name, "print_count") or 0
 		frappe.db.set_value(
@@ -682,7 +765,18 @@ def _get_locked_editable_carton(carton: str):
 	carton_doc.check_permission("write")
 	_assert_no_active_transfer(po)
 	if carton_doc.verified:
-		frappe.throw(_("Carton {0} is verified and cannot be changed.").format(frappe.bold(carton_doc.name)))
+		# 待装=0 即完成，无独立确认环节：编辑已确认箱自动退回编辑态，
+		# 调整后若再次装满会由 update_carton_totals 自动重新确认
+		carton_doc.verified = 0
+		carton_doc.flags.jd_allow_rework = True
+		carton_doc.save()
+		frappe.db.set_value(
+			"JD Purchase Order",
+			purchase_order,
+			{"packing_status": "装箱中", "status": "装箱中"},
+			update_modified=False,
+		)
+		carton_doc = frappe.get_doc("JD Carton", carton)
 	return carton_doc, po
 
 
@@ -871,6 +965,10 @@ def get_whole_carton_conversion(platform_item: str | None, purchase_uom: str | N
 			(flt(row.conversion_factor, 6) for row in uoms if row.uom == purchase_uom),
 			0,
 		)
+		if purchase_factor <= 0:
+			# 吉客云采购单的计量单位（如"个"）偶尔与货品主档库存单位（如"盒"）不一致
+			# 且无换算行。整箱建议仅为作业参考，此时按 1:1 视同库存单位计算。
+			purchase_factor = 1
 	if purchase_factor <= 0:
 		return None
 	qty_in_purchase_uom = flt(box_factor / purchase_factor, 6)
@@ -926,12 +1024,103 @@ def update_carton_totals(purchase_order):
 	total = frappe.db.count("JD Carton", {"purchase_order": purchase_order})
 	frappe.db.set_value("JD Carton", {"purchase_order": purchase_order}, "total_cartons", total, update_modified=False)
 	frappe.db.set_value("JD Purchase Order", purchase_order, "total_cartons", total, update_modified=False)
+	_auto_verify_if_complete(purchase_order)
+
+
+def _auto_verify_if_complete(purchase_order):
+	"""待装归零 = 装箱完成：自动填批次并确认全部箱，采购单状态置"已装箱"。
+
+	无独立"确认"环节——修改箱（改数量/加删商品）会把状态带回"装箱中"，
+	调整到再次装满时自动重新确认。
+	"""
+	try:
+		items = _get_aggregated_order_items(frappe.get_doc("JD Purchase Order", purchase_order))
+		packed_by_sku = _get_packed_qty_by_sku(purchase_order)
+		for item in items:
+			remaining = flt(item["purchase_qty"] - flt(packed_by_sku.get(item["jd_sku"]), 6), 6)
+			if remaining > 0:
+				# 还有待装：装箱进行中（有箱时状态统一由本函数管理）
+				if frappe.db.count("JD Carton", {"purchase_order": purchase_order}):
+					frappe.db.set_value(
+						"JD Purchase Order",
+						purchase_order,
+						{"packing_status": "装箱中", "status": "装箱中"},
+						update_modified=False,
+					)
+				return  # 装箱进行中
+	except Exception:
+		return
+	pending = frappe.get_all("JD Carton", filters={"purchase_order": purchase_order, "verified": 0}, pluck="name")
+	if not pending:
+		return
+	# 确认前从备货池继承批次号（备货时选定的批次 → 箱组件）
+	po_doc = frappe.get_doc("JD Purchase Order", purchase_order)
+	pool_map = {}
+	for r in frappe.get_all(
+		"JD Stocking Pool Item",
+		filters={"import_batch": po_doc.import_batch, "batch_no": ["is", "set"]},
+		fields=["stock_item", "batch_no"],
+	):
+		if r.stock_item not in pool_map:
+			pool_map[r.stock_item] = r.batch_no
+	verified_failed = False
+	for carton_name in pending:
+		frappe.db.sql("select name from `tabJD Carton` where name = %s for update", carton_name)
+		carton = frappe.get_doc("JD Carton", carton_name)
+		# 第一步：普通保存，补齐组件批次
+		changed = False
+		for row in carton.components:
+			if not row.batch_no and pool_map.get(row.stock_item):
+				row.batch_no = pool_map[row.stock_item]
+				changed = True
+		if changed:
+			carton.save()
+		# 预检查：批次商品的组件必须有批次号（确认前必须填批次）。
+		# 仍缺的箱跳过确认，PO 保持"装箱中"；操作员用"批量填写批号"补齐后
+		# （assign_batch 会再次触达本函数）自动完成。
+		if any(
+			not row.batch_no and frappe.get_cached_value("Item", row.stock_item, "has_batch_no")
+			for row in carton.components
+		):
+			verified_failed = True
+			continue
+		# 第二步：单独确认（受控验证要求确认动作不伴随其他变更）
+		if not frappe.db.get_value("JD Carton", carton_name, "verified"):
+			carton = frappe.get_doc("JD Carton", carton_name)
+			carton.verified = 1
+			carton.flags.jd_allow_verify = True
+			carton.save()
+	if verified_failed:
+		return
+	frappe.get_doc("JD Purchase Order", purchase_order).db_set(
+		{"packing_status": "已装箱", "status": "已装箱", "workflow_stage": "装箱"}
+	)
+	if pending:
+		frappe.get_doc("JD Purchase Order", purchase_order).db_set(
+			{"packing_status": "已装箱", "status": "已装箱", "workflow_stage": "装箱"}
+		)
 
 
 def parse_batch_map(batch_map) -> dict:
 	if not batch_map:
 		return {}
 	return json.loads(batch_map) if isinstance(batch_map, str) else dict(batch_map)
+
+
+def _pool_batch_map(import_batch: str) -> dict:
+	"""备货池选定的批次 → {stock_item: batch_no}，装箱组件生成时自动继承。"""
+	result = {}
+	if not import_batch:
+		return result
+	for row in frappe.get_all(
+		"JD Stocking Pool Item",
+		filters={"import_batch": import_batch, "batch_no": ["is", "set"]},
+		fields=["stock_item", "batch_no"],
+		order_by="creation",
+	):
+		if row.stock_item and row.batch_no and row.stock_item not in result:
+			result[row.stock_item] = row.batch_no
+	return result
 
 
 def _carton_filters(purchase_order, start_sequence=None, end_sequence=None):

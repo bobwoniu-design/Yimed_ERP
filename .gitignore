@@ -37,3 +37,9 @@ database.sql.gz
 # Local migration staging
 migration-data/
 backups/
+
+# Local browser binary (agent tooling, 243MB)
+chromium/
+
+# Ad-hoc debugging scripts
+_tmp_probe_stockout.py

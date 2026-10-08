@@ -11,19 +11,89 @@ from yimed_ecommerce.jd.transfer import create_transfer, get_transfer_defaults
 
 
 class TestJDTransfer(IntegrationTestCase):
+
+	def setUp(self):
+		super().setUp()
+		company = frappe.db.get_value("Company", {}, "name")
+		self._orig_settings = None
+		if frappe.db.exists("JD Self Operated Settings", company):
+			doc = frappe.get_doc("JD Self Operated Settings", company)
+			self._orig_settings = {f: doc.get(f) for f in ("company", "default_source_warehouse", "default_target_warehouse", "default_transit_warehouse", "default_transfer_mode", "allow_warehouse_override")}
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		# 清理关联的测试库存单据（submit 会 commit 破坏回滚，导致草稿单残留阻塞后续用例）
+		for se in frappe.get_all("Stock Entry", filters={"custom_jd_purchase_order": ["like", "_TEST-JD-PO-%"]}, pluck="name"):
+			docstatus = frappe.db.get_value("Stock Entry", se, "docstatus")
+			if docstatus == 1:
+				frappe.get_doc("Stock Entry", se).cancel()
+			frappe.db.delete("Stock Ledger Entry", {"voucher_no": se})
+			frappe.db.delete("Stock Entry Detail", {"parent": se})
+			frappe.db.delete("Stock Entry", {"name": se})
+		frappe.db.commit()
+
+	def _cleanup_leaked_test_data(self):
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
+
+	def tearDown(self):
+		# 1) 恢复/清理京东自营设置（测试会改写第一个公司的设置）
+		if getattr(self, "_orig_settings", None):
+			doc = frappe.get_doc("JD Self Operated Settings", self._orig_settings["company"])
+			doc.update(self._orig_settings)
+			doc.save()
+		elif frappe.db.exists("JD Self Operated Settings", frappe.db.get_value("Company", {}, "name")):
+			frappe.delete_doc("JD Self Operated Settings", frappe.db.get_value("Company", {}, "name"), ignore_permissions=True)
+		# 2) 清理本用例泄漏的测试数据（Stock Entry submit 破坏事务回滚）
+		try:
+			self._cleanup_leaked_test_data()
+		except Exception:
+			pass
+		frappe.db.commit()
+		super().tearDown()
 	def test_company_defaults_are_returned_and_locked_on_server(self):
 		company = frappe.db.get_value("Company", {}, "name")
 		source, target = _get_two_warehouses(company)
-		frappe.get_doc(
-			{
-				"doctype": "JD Self Operated Settings",
-				"company": company,
+		if frappe.db.exists("JD Self Operated Settings", company):
+			settings = frappe.get_doc("JD Self Operated Settings", company)
+			settings.update({
 				"default_source_warehouse": source,
 				"default_target_warehouse": target,
 				"default_transfer_mode": "一步调拨",
 				"allow_warehouse_override": 0,
-			}
-		).insert()
+			})
+			settings.save()
+		else:
+			frappe.get_doc(
+				{
+					"doctype": "JD Self Operated Settings",
+					"company": company,
+					"default_source_warehouse": source,
+					"default_target_warehouse": target,
+					"default_transfer_mode": "一步调拨",
+					"allow_warehouse_override": 0,
+				}
+			).insert()
 
 		item = make_item("_Test JD Locked Defaults Item", is_stock_item=1)
 		jd_sku = "_TEST-JD-LOCKED-DEFAULTS-SKU"
@@ -68,6 +138,8 @@ class TestJDTransfer(IntegrationTestCase):
 	def test_two_step_company_settings_require_transit_warehouse(self):
 		company = frappe.db.get_value("Company", {}, "name")
 		source, target = _get_two_warehouses(company)
+		if frappe.db.exists("JD Self Operated Settings", company):
+			frappe.delete_doc("JD Self Operated Settings", company, ignore_permissions=True)
 		settings = frappe.get_doc(
 			{
 				"doctype": "JD Self Operated Settings",

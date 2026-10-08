@@ -30,5 +30,5 @@ class JDPurchaseOrder(Document):
 	def require_complete_mapping(self):
 		unmapped = sorted({row.jd_sku for row in self.items if row.mapping_status != "已映射"})
 		if unmapped:
-			frappe.throw(_("Please map JD SKUs before continuing: {0}").format(", ".join(unmapped)))
+			frappe.throw(_("请先完成京东SKU映射，再继续操作：{0}").format(", ".join(unmapped)))
 

@@ -8,7 +8,7 @@
  "fields": [
   {"fieldname": "jd_sku", "fieldtype": "Data", "in_list_view": 1, "label": "京东SKU", "reqd": 1},
   {"fieldname": "jd_item_name", "fieldtype": "Data", "in_list_view": 1, "label": "京东商品名称"},
-  {"fieldname": "platform_item", "fieldtype": "Link", "in_list_view": 1, "label": "平台商品编码", "options": "Item", "read_only": 1},
+  {"fieldname": "platform_item", "fieldtype": "Link", "in_list_view": 1, "label": "ERP编码", "options": "Item", "read_only": 1},
   {"fetch_from": "platform_item.item_name", "fieldname": "platform_item_name", "fieldtype": "Data", "label": "平台商品名称", "read_only": 1},
   {"fieldname": "purchase_qty", "fieldtype": "Float", "in_list_view": 1, "label": "采购数量", "reqd": 1},
   {"fieldname": "purchase_uom", "fieldtype": "Link", "in_list_view": 1, "label": "采购单位", "options": "UOM"},

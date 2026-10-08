@@ -9,6 +9,7 @@
   "resource",
   "direction",
   "interval_minutes",
+  "daily_run_time",
   "sync_start_at",
     "last_enqueued_at",
     "last_success_at",
@@ -45,13 +46,21 @@
   },
   {
    "default": "360",
-   "description": "支持 1、5、15、30、60、360 分钟；生产环境建议订单 5 分钟、采购/库存 15 分钟、主数据 360 分钟",
+   "description": "支持 1、5、15、30、60、360、1440 分钟；1440 为日批模式（每天在指定时间同步前一日数据），生产环境建议交易单据 15 分钟、主数据 360 分钟",
    "fieldname": "interval_minutes",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "间隔（分钟）",
-   "options": "1\n5\n15\n30\n60\n360",
+   "options": "1\n5\n15\n30\n60\n360\n1440",
    "reqd": 1
+  },
+  {
+   "default": "12:01:00",
+   "depends_on": "eval:doc.interval_minutes==1440",
+   "description": "日批模式每天固定执行时间；同步窗口为前一日 00:00:00-23:59:59",
+   "fieldname": "daily_run_time",
+   "fieldtype": "Time",
+   "label": "每日执行时间"
   },
   {
    "description": "首次执行时可从此时间开始；留空则使用连接配置中的资源起始日期",

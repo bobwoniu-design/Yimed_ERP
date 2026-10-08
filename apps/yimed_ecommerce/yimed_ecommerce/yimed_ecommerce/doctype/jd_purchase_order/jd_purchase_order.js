@@ -208,8 +208,8 @@ function print_carton_labels(frm) {
 				format: "JD Carton Label",
 				no_letterhead: "1",
 				options: JSON.stringify({
-					"page-width": "59.8mm",
-					"page-height": "71mm",
+					"page-width": "100mm",
+					"page-height": "80mm",
 					"margin-top": "1.5mm",
 					"margin-bottom": "1.5mm",
 					"margin-left": "1.5mm",

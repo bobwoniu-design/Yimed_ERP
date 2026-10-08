@@ -45,8 +45,17 @@ STOCK_ENTRY_CUSTOM_FIELDS = {
 }
 
 
+ITEM_LABEL_CUSTOM_FIELDS = {"Item": [
+    {"fieldname": "custom_jd_label_section", "fieldtype": "Section Break", "label": "组套标签信息", "insert_after": "description", "collapsible": 1},
+    {"fieldname": "custom_jd_registration", "fieldtype": "Small Text", "label": "标签注册证号", "insert_after": "custom_jd_label_section"},
+    {"fieldname": "custom_jd_specification", "fieldtype": "Small Text", "label": "标签规格型号", "insert_after": "custom_jd_registration"},
+    {"fieldname": "custom_jd_manufacturer", "fieldtype": "Data", "label": "标签生产厂家", "insert_after": "custom_jd_specification"},
+]}
+
+
 def after_install():
 	create_custom_fields(STOCK_ENTRY_CUSTOM_FIELDS, update=True)
+	create_custom_fields(ITEM_LABEL_CUSTOM_FIELDS, update=True)
 	ensure_system_fee_items()
 	ensure_jd_workspace_route()
 	ensure_ecommerce_workspace_route()
@@ -54,6 +63,7 @@ def after_install():
 
 def after_migrate():
 	create_custom_fields(STOCK_ENTRY_CUSTOM_FIELDS, update=True)
+	create_custom_fields(ITEM_LABEL_CUSTOM_FIELDS, update=True)
 	ensure_system_fee_items()
 	backfill_jd_import_batch_codes()
 	ensure_jd_workspace_route()

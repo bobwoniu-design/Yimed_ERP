@@ -16,22 +16,33 @@ from yimed_ecommerce.jd.transfer import create_transfer
 
 
 class TestJDPackingInvariants(IntegrationTestCase):
+
+	def setUp(self):
+		super().setUp()
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
 	def test_direct_save_and_delete_cannot_bypass_verified_state(self):
 		po, jd_sku, _ = _make_po("DIRECT-VERIFIED", qty=2)
 		carton_name = create_equal_cartons(po.name, jd_sku, 2, 2)["cartons"][0]
 
+		# 装满即自动确认（待装=0）：直接 save 修改会先命中"已确认箱不可直改"保护
 		carton = frappe.get_doc("JD Carton", carton_name)
 		carton.allocations[0].qty = 3
-		with self.assertRaisesRegex(frappe.ValidationError, "Carton quantity would exceed ordered quantity"):
+		with self.assertRaisesRegex(frappe.ValidationError, "cannot be changed directly|exceed ordered quantity"):
 			carton.save()
 
-		carton = frappe.get_doc("JD Carton", carton_name)
-		carton.verified = 1
-		with self.assertRaisesRegex(frappe.ValidationError, "controlled verification action"):
-			carton.save()
-		self.assertEqual(frappe.db.get_value("JD Carton", carton_name, "verified"), 0)
-
-		verify_cartons(po.name)
+		# 装满自动确认后 verified=1；绕过受控通道改数量/翻转/删除均被拦
 		carton = frappe.get_doc("JD Carton", carton_name)
 		carton.allocations[0].qty = 1
 		with self.assertRaisesRegex(frappe.ValidationError, "Verified carton.*cannot be changed directly"):
@@ -46,6 +57,30 @@ class TestJDPackingInvariants(IntegrationTestCase):
 
 		undo_carton_verification(po.name, "Controlled rework remains supported")
 		self.assertEqual(frappe.db.get_value("JD Carton", carton_name, "verified"), 0)
+
+	def _cleanup_leaked_test_data(self):
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
+
+	def tearDown(self):
+		# 测试中 Stock Entry submit 会 commit 破坏事务回滚；
+		# setUp 只能清理上一轮残留，最后一个用例的数据靠 tearDown 兜底
+		try:
+			self._cleanup_leaked_test_data()
+		except Exception:
+			pass
+		super().tearDown()
 
 	def test_active_transfer_blocks_direct_changes_deletion_and_new_packing(self):
 		po, jd_sku, _ = _make_po("ACTIVE-TRANSFER", qty=2, box_factor=1)
@@ -86,10 +121,11 @@ class TestJDPackingInvariants(IntegrationTestCase):
 		assign_batch_to_cartons(po.name, item, batch_one.name)
 		verify_cartons(po.name, start_sequence=1, end_sequence=1)
 
-		with self.assertRaisesRegex(frappe.ValidationError, "is verified.*Undo verification"):
-			assign_batch_to_cartons(po.name, item, batch_two.name, only_empty=0)
+		# 待装=0 即装箱完成（无独立确认环节）：未转移的已确认箱允许改批次，
+		# 改动自动退回编辑态，装满后自动重新确认
+		result = assign_batch_to_cartons(po.name, item, batch_two.name, only_empty=0)
+		self.assertGreater(result["updated_rows"], 0)
 
-		verify_cartons(po.name, start_sequence=2, end_sequence=2)
 		source, target = _get_two_warehouses(po.company)
 		create_transfer(po.name, source, target)
 		with self.assertRaisesRegex(frappe.ValidationError, "Draft Stock Entry.*Delete it"):

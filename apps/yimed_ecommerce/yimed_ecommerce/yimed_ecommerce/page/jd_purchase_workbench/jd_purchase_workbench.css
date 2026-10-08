@@ -2,15 +2,71 @@
 .jd-pw-card { background:transparent; border:0; border-radius:0; }
 .jd-pw-card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 2px; border-bottom:1px solid var(--pw-border); }
 .jd-pw-card-head h3 { margin:0; font-size:14px; }.jd-pw-card-head span { color:var(--pw-muted); font-size:11px; }
-.jd-pw-steps { display:grid; grid-template-columns:repeat(5,1fr); margin-bottom:6px; padding:5px 4px 0; border-bottom:1px solid var(--pw-border); }.jd-pw-steps button{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:6px 8px;color:var(--pw-muted);background:transparent;border:0;border-bottom:2px solid transparent}.jd-pw-steps button.is-active{color:#1675e0;border-bottom-color:#1675e0}.jd-pw-steps i{display:grid;flex:0 0 auto;place-items:center;width:22px;height:22px;font-style:normal;background:var(--control-bg,#f0f2f4);border-radius:50%}.jd-pw-steps button.is-active i{color:#fff;background:#1675e0}.jd-pw-steps button>span{display:flex;min-width:0;flex-direction:column;align-items:flex-start;line-height:1.25}.jd-pw-steps strong{font-size:12px;font-weight:600}.jd-pw-steps small{margin-top:2px;color:var(--pw-muted);font-size:10px;font-weight:400}
+.jd-pw-steps { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); margin-bottom:6px; padding:5px 4px 0; border-bottom:1px solid var(--pw-border); }.jd-pw-steps button{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:6px 8px;color:var(--pw-muted);background:transparent;border:0;border-bottom:2px solid transparent}.jd-pw-steps button.is-active{color:#1675e0;border-bottom-color:#1675e0}.jd-pw-steps i{display:grid;flex:0 0 auto;place-items:center;width:22px;height:22px;font-style:normal;background:var(--control-bg,#f0f2f4);border-radius:50%}.jd-pw-steps button.is-active i{color:#fff;background:#1675e0}.jd-pw-steps button>span{display:flex;min-width:0;flex-direction:column;align-items:flex-start;line-height:1.25}.jd-pw-steps strong{font-size:12px;font-weight:600}.jd-pw-steps small{margin-top:2px;color:var(--pw-muted);font-size:10px;font-weight:400}
 .jd-pw-step-content { padding:8px 2px 16px; }.jd-pw-card{overflow:visible}.jd-pw-card-head>div:last-child{display:flex;gap:6px}.jd-pw-kpis{display:flex;gap:12px;padding:12px 2px}.jd-pw-kpis span{min-width:90px;color:var(--pw-muted);font-size:11px}.jd-pw-kpis b{display:block;color:var(--text-color);font-size:22px}
 .jd-pw-flat-section{overflow:hidden;background:var(--card-bg,#fff);border:1px solid var(--pw-border);border-radius:8px}.jd-pw-inline-summary{display:flex;align-items:center;gap:14px;padding:9px 12px;border-bottom:1px solid var(--pw-border);font-size:11px}.jd-pw-inline-summary strong{font-size:13px}.jd-pw-inline-summary span{color:var(--pw-muted)}
 .jd-pw-card table{margin:0}.jd-pw-card table th{font-size:10px;white-space:nowrap}.jd-pw-card table td{vertical-align:middle}.jd-pw-card table td small{display:block;color:var(--pw-muted);font-size:10px}.jd-pw-inline-control,.jd-pw-row-actions{display:flex;min-width:180px;gap:5px}.jd-pw-inline-control input{min-width:110px}.jd-pw-row-actions{min-width:52px}.jd-pw-sorting-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px}.jd-pw-sorting-grid h4{font-size:12px}.jd-pw-pool-row{display:grid;grid-template-columns:1fr 1fr 80px;align-items:center;gap:7px;padding:8px;border-bottom:1px solid var(--pw-border);font-size:11px}.jd-pw-pool-row span{color:var(--pw-muted)}
 .jd-pw-order-table td,.jd-pw-order-table th{white-space:nowrap}.jd-pw-order-link{padding:0;font-weight:600}.jd-pw-step-filter{display:flex;justify-content:flex-end;margin-bottom:8px}.jd-pw-order-filter{display:flex;align-items:center;gap:7px;margin:0;color:var(--pw-muted);font-size:11px;white-space:nowrap}.jd-pw-order-filter select{min-width:245px}.jd-pw-card-head .jd-pw-order-filter{margin-right:4px}
 [data-warehouse-control]{min-width:190px}[data-warehouse-control] .form-group{margin-bottom:0}[data-warehouse-control] .control-label{display:none}
-.jd-pw-matrix th,.jd-pw-matrix td{min-width:105px}.jd-pw-matrix th:first-child,.jd-pw-matrix td:first-child{min-width:190px}.jd-pw-matrix td small{display:block;color:var(--pw-muted);font-size:10px}.jd-pw-difference-reason{padding:12px 14px;border-top:1px solid var(--pw-border)}.jd-pw-difference-reason label{display:block;margin:0;font-size:11px}
+.jd-pw-matrix th,.jd-pw-matrix td{min-width:105px}.jd-pw-matrix th:first-child,.jd-pw-matrix td:first-child{min-width:190px}.jd-pw-matrix td small{display:block;color:var(--pw-muted);font-size:10px}.jd-pw-matrix th small{display:block;font-weight:400;color:var(--pw-muted);font-size:10px;white-space:normal;line-height:1.25}
+/* 分拣矩阵：采购单多时的滚动体验——横向滚动 + 左右阴影提示 + 首列/表头固定 */
+.jd-pw-matrix{overflow-x:auto;max-height:60vh;overflow-y:auto;position:relative}
+.jd-pw-matrix::-webkit-scrollbar{height:10px;width:10px}
+.jd-pw-matrix::-webkit-scrollbar-track{background:transparent}
+.jd-pw-matrix::-webkit-scrollbar-thumb{background:#c8cdd3;border-radius:5px}
+.jd-pw-matrix::-webkit-scrollbar-thumb:hover{background:#a8aeb5}
+.jd-pw-matrix{scrollbar-width:thin;scrollbar-color:#c8cdd3 transparent}
+.jd-pw-matrix thead th{position:sticky;top:0;background:#fff;z-index:2;box-shadow:0 1px 0 var(--pw-border,#d1d8dd)}
+.jd-pw-matrix tbody th,.jd-pw-matrix tbody td:first-child{position:sticky;left:0;background:#fff;z-index:1}
+.jd-pw-matrix thead th:first-child{z-index:3}
+.jd-pw-matrix.table-hover>tbody>tr:hover>td:first-child{background:#f5f7fa}
+.jd-pw-difference-reason{padding:12px 14px;border-top:1px solid var(--pw-border)}.jd-pw-difference-reason label{display:block;margin:0;font-size:11px}
 .jd-pw-packing-preview{display:flex;gap:8px;padding:0 14px 16px;overflow-x:auto}.jd-pw-packing-preview>div{min-width:145px;padding:10px;border:1px solid var(--pw-border);border-radius:8px}.jd-pw-packing-preview>div>*{display:block;margin-top:4px;font-size:11px}.jd-pw-action-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px}.jd-pw-action-cards button{padding:16px;text-align:left;color:inherit;background:transparent;border:1px solid var(--pw-border);border-radius:9px}.jd-pw-action-cards strong,.jd-pw-action-cards span{display:block}.jd-pw-action-cards span{margin-top:5px;color:var(--pw-muted);font-size:11px}
 .jd-pw-packing-gate{display:flex;align-items:center;gap:10px;margin:0 0 8px}.jd-pw-packing-gate span{font-size:11px}.jd-pw-packing-mount>.jd-packing-workbench{padding:0}.jd-pw-packing-mount .jd-packing-compact-header{margin-bottom:8px;border-radius:7px}.jd-pw-packing-mount .jd-packing-layout-shell{margin-top:0}
 .jd-pw-gate-block{display:flex;min-height:300px;flex-direction:column;align-items:center;justify-content:center;padding:34px;text-align:center}.jd-pw-gate-icon{display:grid;width:42px;height:42px;margin-bottom:12px;place-items:center;color:#8a5700;background:#fff3cd;border-radius:50%;font-size:22px;font-weight:700}.jd-pw-gate-block h3{margin:0 0 7px;font-size:16px}.jd-pw-gate-block p{max-width:600px;color:var(--pw-muted)}.jd-pw-gate-block ul{max-width:680px;margin:8px 0 18px;padding-left:22px;text-align:left;color:#8a5700}.jd-pw-gate-actions{display:flex;gap:8px}
 .jd-pw-empty,.jd-pw-contract-empty{display:flex;min-height:260px;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;color:var(--pw-muted)}.jd-pw-contract-empty code{margin-top:8px}.jd-pw-inline-empty{padding:24px;text-align:center;color:var(--pw-muted)}.jd-pw-empty.is-error{color:#c92a2a}.jd-pw-spinner{width:28px;height:28px;border:3px solid var(--pw-border);border-top-color:#1675e0;border-radius:50%;animation:jd-pw-spin .8s linear infinite}@keyframes jd-pw-spin{to{transform:rotate(360deg)}}
 @media(max-width:900px){.jd-pw-steps{grid-template-columns:1fr;gap:1px;padding:3px}.jd-pw-steps button{min-height:42px;justify-content:flex-start;border-bottom:0;border-left:2px solid transparent}.jd-pw-steps button.is-active{border-left-color:#1675e0}.jd-pw-sorting-grid,.jd-pw-action-cards{grid-template-columns:1fr}.jd-pw-card-head{align-items:flex-start;flex-direction:column}.jd-pw-card-head>div:last-child{width:100%;flex-wrap:wrap}.jd-pw-order-filter,.jd-pw-order-filter select{width:100%;min-width:0}.jd-pw-step-filter{justify-content:stretch}.jd-pw-kpis,.jd-pw-inline-summary{flex-wrap:wrap}}
+.jd-assembly-card{margin-bottom:14px}
+.jd-assembly-card table{margin:0 14px;width:calc(100% - 28px)}
+.jd-assembly-status{display:flex;align-items:center}
+.jd-assembly-actions{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--pw-border)}
+.jd-assembly-actions label{display:flex;align-items:center;gap:8px;margin:0;font-size:12px;color:var(--pw-muted)}
+.jd-assembly-actions input{width:100px}
+.jd-assembly-table{table-layout:fixed}
+.jd-assembly-table th,.jd-assembly-table td{vertical-align:middle}
+.jd-assembly-table th:first-child,.jd-assembly-table td:first-child{width:34%}
+.jd-assembly-table td small{display:block;color:var(--pw-muted);font-size:10px;white-space:normal}
+
+/* 六个流程始终在同一行，窄屏允许横向滚动。 */
+.jd-pw-steps { grid-template-columns: repeat(5, minmax(110px, 1fr)); overflow-x: auto; }
+.jd-pw-steps strong { white-space: nowrap; }
+
+.jd-pw-toolbar-filters { display: inline-flex; align-items: center; gap: 6px; margin-right: 8px; }
+.jd-pw-toolbar-filters select { width: 185px; min-width: 0; margin: 0; font-size: 12px; }
+.jd-pw-toolbar-warehouse { display: inline-flex; align-items: center; gap: 5px; max-width: 230px; font-size: 12px; white-space: nowrap; }
+.jd-pw-toolbar-warehouse > span { color: var(--text-muted); flex-shrink: 0; }
+.jd-pw-toolbar-warehouse strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+
+/* 当前工序：绿色已完成，橙色未完成；文字和色点兼容系统原生下拉框。 */
+.jd-pw-toolbar-filters select { width: 260px; }
+.jd-pw-toolbar-filters select.jd-order-complete { color: #16733c; background-color: #edf8f0; border-color: #a8d7b7; }
+.jd-pw-toolbar-filters select.jd-order-pending { color: #a65008; background-color: #fff5e9; border-color: #edc393; }
+.jd-pw-toolbar-filters option { color: var(--text-color, #333); background-color: var(--fg-color, #fff); }
+.jd-pw-toolbar-filters option.jd-order-complete { color: #16733c; }
+.jd-pw-toolbar-filters option.jd-order-pending { color: #a65008; }
+
+/* One aligned list for finished bundles and their component materials. */
+.jd-assembly-list { margin-bottom: 0; }
+.jd-assembly-list th { white-space: nowrap; }
+.jd-assembly-list td { vertical-align: middle; }
+.jd-assembly-list .jd-assembly-parent { background: var(--subtle-fg, #f5f6f7); }
+.jd-assembly-list .jd-assembly-parent td { border-top: 2px solid var(--border-color, #e5e7eb); }
+.jd-assembly-list .jd-assembly-component td { font-size: 12px; }
+.jd-assembly-indent { display: inline-block; margin: 0 10px 0 14px; color: var(--text-muted); }
+.jd-assembly-list input[data-assembly-qty] { width: 100px; text-align: right; margin-left: auto; }
+
+/* Completion status stays visible independently of the active step underline. */
+.jd-pw-steps button.is-complete i { color: #16733c; background: #e7f5ec; font-weight: 700; }
+.jd-pw-steps button.is-pending i { color: #a65008; background: #fff1df; }
+.jd-pw-steps .is-complete .jd-pw-step-status { color: #16733c; }
+.jd-pw-steps .is-pending .jd-pw-step-status { color: #a65008; }

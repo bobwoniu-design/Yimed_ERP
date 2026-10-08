@@ -14,6 +14,22 @@ from yimed_ecommerce.jd.transfer import create_transfer
 
 
 class TestJDRework(IntegrationTestCase):
+
+	def setUp(self):
+		super().setUp()
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
 	def test_clear_unverified_cartons_requires_reason_and_leaves_audit_comment(self):
 		po, jd_sku = _make_purchase_order("CLEAR", qty=3)
 		create_equal_cartons(po.name, jd_sku, total_qty=3, qty_per_carton=1)
@@ -21,6 +37,8 @@ class TestJDRework(IntegrationTestCase):
 		with self.assertRaisesRegex(frappe.ValidationError, "reason is required"):
 			clear_unverified_cartons(po.name, "  ")
 
+		# 待装=0 即装箱完成（装满自动确认）：clear 前需先受控撤销确认
+		undo_carton_verification(po.name, "Packing plan changed")
 		result = clear_unverified_cartons(po.name, "Packing plan changed")
 		self.assertEqual(result["deleted_cartons"], 3)
 		self.assertFalse(frappe.db.exists("JD Carton", {"purchase_order": po.name}))
@@ -28,6 +46,30 @@ class TestJDRework(IntegrationTestCase):
 		self.assertEqual(po.packing_status, "待装箱")
 		self.assertEqual(po.status, "待备货")
 		self.assertTrue(_has_audit_comment(po.name, "Packing plan changed"))
+
+	def _cleanup_leaked_test_data(self):
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
+
+	def tearDown(self):
+		# 测试中 Stock Entry submit 会 commit 破坏事务回滚；
+		# setUp 只能清理上一轮残留，最后一个用例的数据靠 tearDown 兜底
+		try:
+			self._cleanup_leaked_test_data()
+		except Exception:
+			pass
+		super().tearDown()
 
 	def test_clear_rejects_verified_cartons(self):
 		po, jd_sku = _make_purchase_order("CLEAR-VERIFIED")

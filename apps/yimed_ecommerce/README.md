@@ -12,7 +12,7 @@ Yimed channel e-commerce operations for JD procurement, packing, handover and st
 - Carton labels are 60 mm x 70 mm and contain no barcode or QR code.
 - Product combinations reuse ERPNext Product Bundle. No duplicate JD bundle master is maintained.
 - The Product Bundle parent is the business Item; physical components are expanded for packing and stock transfer.
-- Batch dates come from ERPNext Batch. JD packing requires at least two thirds of total shelf life remaining.
+- Batch dates come from ERPNext Batch. Remaining shelf-life ratios are recorded for reference and do not block JD packing.
 - Equal single-SKU cartons and repeated mixed-SKU carton templates can be generated in bulk.
 - Batch assignment, carton verification and 60 mm x 70 mm label printing are purchase-order-level bulk actions.
 - The agreed legacy SKU workbook headers `链接主SKU` and `SKU` are accepted by the mapping importer.
@@ -57,3 +57,8 @@ Pre-commit is configured to use the following tools for checking and formatting 
 ### License
 
 mit
+
+
+### Procurement work sheets
+
+The stocking, assembly and sorting stages provide Excel export and A4 landscape PDF printing through `jd.workbench_reports`. Stocking prints without batch numbers; current unsaved stocking/sorting inputs are rendered as a draft without changing business records. Sorting respects the selected purchase order. PDF generation uses the existing Frappe Chromium renderer, Noto CJK fonts and pypdf page numbering. On Ubuntu the headless browser needs `libnss3`, `libnspr4`, `libasound2t64` and `fonts-noto-cjk`; `poppler-utils` is used for visual QA.

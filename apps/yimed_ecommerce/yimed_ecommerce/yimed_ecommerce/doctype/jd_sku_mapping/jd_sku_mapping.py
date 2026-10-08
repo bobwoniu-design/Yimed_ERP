@@ -16,6 +16,13 @@ class JDSKUMapping(Document):
 				)
 			)
 
+	def on_update(self):
+		# 手动新建或修改单条映射后，自动刷新受影响的采购单行（带出 ERP 编码），
+		# 与批量导入文件时的行为保持一致。
+		if self.jd_sku and not self.flags.in_patch:
+			_refresh_purchase_orders([self.jd_sku])
+			frappe.db.commit()
+
 
 @frappe.whitelist()
 def import_mapping_file(file_url: str):

@@ -17,6 +17,22 @@ from yimed_ecommerce.jd.transfer import create_transfer
 
 
 class TestJDCartonEditing(IntegrationTestCase):
+
+	def setUp(self):
+		super().setUp()
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
 	def test_update_rebuilds_components_and_preserves_matching_batch(self):
 		suffix = generate_hash(length=8)
 		item = make_item(f"_Test JD Edit Batch Item {suffix}", is_stock_item=1, has_batch_no=1)
@@ -42,6 +58,30 @@ class TestJDCartonEditing(IntegrationTestCase):
 		self.assertEqual(po.packing_status, "装箱中")
 		self.assertEqual(po.status, "装箱中")
 
+	def _cleanup_leaked_test_data(self):
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
+
+	def tearDown(self):
+		# 测试中 Stock Entry submit 会 commit 破坏事务回滚；
+		# setUp 只能清理上一轮残留，最后一个用例的数据靠 tearDown 兜底
+		try:
+			self._cleanup_leaked_test_data()
+		except Exception:
+			pass
+		super().tearDown()
+
 	def test_update_validates_replacement_total_and_input(self):
 		item = make_item(f"_Test JD Edit Qty {generate_hash(length=8)}", is_stock_item=1)
 		po, skus = _make_po("EDIT-QTY", [(item, 10)])
@@ -60,13 +100,17 @@ class TestJDCartonEditing(IntegrationTestCase):
 		carton = create_equal_cartons(po.name, skus[0], total_qty=2, qty_per_carton=2)["cartons"][0]
 		verify_cartons(po.name)
 
-		with self.assertRaisesRegex(frappe.ValidationError, "is verified and cannot be changed"):
-			delete_unverified_carton(carton)
+		# 待装=0 即装箱完成（无独立确认环节）：verified 箱未转移时允许编辑，
+		# 编辑自动退回未确认状态（jd_allow_rework 受控返工）
+		result = delete_unverified_carton(carton)
+		self.assertEqual(result["carton_count"], 0)
 
+		carton2 = create_equal_cartons(po.name, skus[0], total_qty=2, qty_per_carton=2)["cartons"][0]
+		verify_cartons(po.name)
 		source, target = _get_two_warehouses(po.company)
 		create_transfer(po.name, source, target)
 		with self.assertRaisesRegex(frappe.ValidationError, "Draft Stock Entry.*Delete it"):
-			copy_carton(carton, 1)
+			copy_carton(carton2, 1)
 
 	def test_delete_updates_status_without_renumbering(self):
 		item = make_item(f"_Test JD Delete Carton {generate_hash(length=8)}", is_stock_item=1)

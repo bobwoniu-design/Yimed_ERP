@@ -95,10 +95,22 @@
 .jd-packing-table { margin: 0; }
 .jd-packing-table > thead > tr > th { border-bottom: 1px solid var(--jd-border); color: var(--jd-muted); font-size: 11px; font-weight: 600; white-space: nowrap; }
 .jd-packing-table > tbody > tr > td { vertical-align: middle; }
-.jd-packing-table td small { display: block; max-width: 250px; overflow: hidden; color: var(--jd-muted); text-overflow: ellipsis; white-space: nowrap; }
+.jd-packing-table td small { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; color: var(--jd-muted); word-break: break-all; }
+/* 当前箱明细表：数量/单位列收窄，SKU 列占宽 */
+.jd-packing-table.jd-carton-detail-table .jd-cd-code-col { width: 110px; min-width: 100px; white-space: nowrap; }
+.jd-packing-table.jd-carton-detail-table .jd-cd-sku-col { min-width: 220px; }
+.jd-packing-table.jd-carton-detail-table .jd-cd-qty-col { width: 96px; min-width: 90px; white-space: nowrap; }
+.jd-packing-table.jd-carton-detail-table .jd-cd-uom-col { width: 56px; min-width: 52px; white-space: nowrap; }
+.jd-packing-table.jd-carton-detail-table .jd-cd-batch-col { min-width: 110px; }
+.jd-packing-table.jd-carton-detail-table .jd-cd-qty-col input { min-width: 72px; width: 72px; }
+.jd-packing-table.jd-carton-detail-table .jd-cd-action-col { width: 70px; min-width: 64px; white-space: nowrap; }
+.jd-bundle-toggle { margin-left: 4px; padding: 0 5px; font-size: 10px; }
+.jd-bundle-detail > td { background: var(--control-bg, #f8f8f8); }
+.jd-bundle-batches .jd-packing-batch-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 4px 8px; padding: 6px 0; border-bottom: 1px dashed var(--jd-border); font-size: 12px; }
+.jd-bundle-batches .jd-packing-batch-row small { display: block; color: var(--jd-muted); }
 .jd-packing-check-cell { width: 34px; text-align: center; }
 .jd-pack-qty,
-.jd-carton-qty { min-width: 82px; text-align: right; }
+.jd-carton-qty { min-width: 62px; width: 66px; text-align: right; }
 .jd-remove-allocation { white-space: nowrap; }
 
 .jd-packing-items-table { width: 100%; margin: 0; }
@@ -107,10 +119,12 @@
 .jd-packing-items-table > tbody > tr > td { height: 42px; padding: 5px 7px; line-height: 1.2; }
 .jd-packing-items-table .jd-packing-check-cell { width: 40px; min-width: 40px; }
 .jd-packing-items-table .jd-item-code,
-.jd-packing-items-table .jd-item-sku { min-width: 112px; white-space: nowrap; }
+.jd-packing-items-table .jd-item-sku { min-width: 100px; white-space: nowrap; }
 .jd-packing-items-table .jd-item-code { font-weight: 600; }
-.jd-packing-items-table .jd-item-name { width: 28%; min-width: 150px; max-width: 320px; }
-.jd-packing-items-table .jd-item-name > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jd-packing-items-table .jd-item-name { width: 36%; min-width: 220px; }
+.jd-packing-items-table .jd-item-name > span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; word-break: break-all; }
+.jd-packing-items-table .jd-batch-col { min-width: 88px; max-width: 140px; }
+.jd-packing-items-table .jd-batch-col span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; word-break: break-all; }
 .jd-packing-items-table .jd-number-col { width: 58px; min-width: 54px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .jd-packing-items-table .jd-uom-col { width: 52px; min-width: 48px; white-space: nowrap; }
 .jd-packing-items-table .jd-carton-spec-col { width: 90px; min-width: 82px; white-space: nowrap; }
@@ -248,7 +262,7 @@
 .jd-packing-items-panel .jd-packing-table-wrap { flex: 1; min-height: 0; overflow: auto; }
 .jd-packing-lower-layout {
 	display: grid;
-	grid-template-columns: minmax(220px, 25fr) 9px minmax(220px, 25fr) 9px minmax(360px, 50fr);
+	grid-template-columns: minmax(280px, 35fr) 9px minmax(360px, 65fr);
 	min-width: 0;
 	min-height: 0;
 }
@@ -328,4 +342,36 @@
 	.jd-packing-copy-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.jd-packing-copy-bar > div { grid-column: 1 / -1; }
 	.jd-packing-copy-bar .btn { grid-column: 1 / -1; }
+}
+
+/* 箱号列表独立滚动，操作栏位于标题右侧，选中统计位于底部。 */
+.jd-packing-carton-list-panel .jd-packing-carton-list { display: block; min-height: 0; padding: 0 10px; }
+.jd-carton-list-table { width: 100%; margin: 0; font-size: 12px; }
+.jd-carton-list-table thead th { position: sticky; top: 0; z-index: 1; background: var(--fg-color, #fff); white-space: nowrap; }
+.jd-carton-list-table td { vertical-align: middle; }
+.jd-carton-list-table .jd-carton-check-cell { width: 28px; padding-left: 6px; padding-right: 6px; }
+.jd-carton-list-table small { display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--jd-muted); font-size: 10px; }
+.jd-carton-list-table tbody tr { cursor: pointer; }
+.jd-carton-list-table tbody tr:hover, .jd-carton-list-table tr.is-checked { background: var(--control-bg, #f7f8fa); }
+.jd-carton-list-table tr.is-active { box-shadow: inset 3px 0 var(--jd-blue); background: var(--control-bg, #eef6ff); }
+.jd-carton-view { padding: 0; border: 0; background: transparent; color: inherit; font-weight: 600; text-align: left; }
+.jd-carton-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 8px; margin-left: auto; }
+.jd-packing-carton-list-panel > .jd-packing-panel-title { flex: 0 0 auto; flex-wrap: wrap; padding: 10px 14px; min-height: 49px; }
+.jd-packing-carton-list-panel > .jd-packing-panel-title h3 { flex: 0 0 auto; }
+.jd-carton-selection-footer { flex: 0 0 auto; padding: 12px 14px; border-top: 1px solid var(--jd-border); color: var(--jd-muted); font-size: 12px; }
+.jd-carton-action-group { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* 采购单与仓库、数量、进度在同一条信息栏内。 */
+.jd-packing-workbench .jd-packing-summary-bar { display: flex; flex-wrap: nowrap; gap: 12px; }
+.jd-packing-summary-bar .jd-packing-header-fact { flex: 1 1 160px; min-width: 80px; }
+.jd-packing-summary-bar .jd-packing-header-progress { flex: 1 1 120px; min-width: 100px; }
+.jd-packing-summary-bar .jd-packing-compact-metric { flex: 0 0 auto; white-space: nowrap; }
+.jd-packing-order-select { flex: 0 0 240px; display: flex; align-items: center; gap: 8px; margin: 0; white-space: nowrap; font-size: 11px; color: var(--jd-muted); }
+.jd-packing-order-select select { min-width: 0; width: 190px; }
+.jd-packing-items-summary { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; padding: 10px 14px; border-top: 1px solid var(--jd-border); background: var(--control-bg, #f7f8fa); font-size: 12px; }
+.jd-packing-items-summary span { color: var(--jd-muted); }
+.jd-packing-items-summary b { color: var(--text-color); font-weight: 600; }
+.jd-packing-items-summary .jd-packing-selected-total { margin-left: auto; }
+@media (max-width: 1200px) {
+ .jd-packing-workbench .jd-packing-summary-bar { flex-wrap: wrap; }
 }

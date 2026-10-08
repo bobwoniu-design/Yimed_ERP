@@ -43,13 +43,19 @@ frappe.ui.form.on("JD Purchase Import Batch", {
 							]),
 							indicator: "red",
 						});
+						frm.reload_doc();
 					} else {
 						frappe.show_alert({
-							message: __("导入成功：共 {0} 条采购单。", [result.success_count || 0]),
+							message: __("导入成功：共 {0} 条采购单，正在进入工作台...", [result.success_count || 0]),
 							indicator: "green",
 						});
+						// 导入成功后直接进入该批次的采购备货工作台，省去手动回列表查找
+						setTimeout(() => {
+							window.location.assign(
+								`/app/jd-purchase-workbench?import_batch=${encodeURIComponent(frm.doc.name)}`
+							);
+						}, 1000);
 					}
-					frm.reload_doc();
 				});
 			}).addClass("btn-primary");
 		}
@@ -59,16 +65,6 @@ frappe.ui.form.on("JD Purchase Import Batch", {
 			}, __("汇总与打印"));
 			frm.add_custom_button(__("分仓汇总"), () => {
 				frappe.set_route("query-report", "JD Warehouse Summary", { import_batch: frm.doc.name });
-			}, __("汇总与打印"));
-			frm.add_custom_button(__("创建上门交接单"), () => {
-				frappe.call({
-					method: "yimed_ecommerce.yimed_ecommerce.doctype.jd_handover.jd_handover.create_from_import_batch",
-					args: { import_batch: frm.doc.name },
-					freeze: true,
-					callback: (response) => {
-						if (response.message) frappe.set_route("Form", "JD Handover", response.message);
-					},
-				});
 			}, __("汇总与打印"));
 		}
 	},

@@ -10,7 +10,7 @@
   {"fieldname":"company","fieldtype":"Link","label":"公司","options":"Company","reqd":1},
   {"default":"草稿","fieldname":"status","fieldtype":"Select","label":"状态","options":"草稿\n已分拣\n短缺","reqd":1,"in_list_view":1},
   {"fieldname":"jd_sku","fieldtype":"Data","label":"京东SKU","reqd":1,"in_list_view":1},
-  {"fieldname":"platform_item","fieldtype":"Link","label":"平台商品编码","options":"Item","reqd":1},
+  {"fieldname":"platform_item","fieldtype":"Link","label":"ERP编码","options":"Item","reqd":1},
   {"fieldname":"stock_item","fieldtype":"Link","label":"实际库存物料","options":"Item","reqd":1,"in_list_view":1},
   {"fieldname":"stocking_pool_item","fieldtype":"Link","label":"备货池明细","options":"JD Stocking Pool Item","reqd":1},
   {"fieldname":"warehouse","fieldtype":"Link","label":"仓库","options":"Warehouse","reqd":1},

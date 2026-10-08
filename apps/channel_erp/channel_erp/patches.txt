@@ -5,3 +5,4 @@ channel_erp.patches.v1_0.split_channel_erp_modules
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+channel_erp.patches.v1_0.reduce_jackyun_api_usage

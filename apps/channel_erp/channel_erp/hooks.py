@@ -241,12 +241,12 @@ ignore_links_on_delete = ["Connector Outbound Message"]
 
 # Request Events
 # ----------------
-# before_request = ["channel_erp.utils.before_request"]
+before_request = ["channel_erp.stock_patch.before_request"]
 # after_request = ["channel_erp.utils.after_request"]
 
 # Job Events
 # ----------
-# before_job = ["channel_erp.utils.before_job"]
+before_job = ["channel_erp.stock_patch.before_job"]
 # after_job = ["channel_erp.utils.after_job"]
 
 # User Data Protection

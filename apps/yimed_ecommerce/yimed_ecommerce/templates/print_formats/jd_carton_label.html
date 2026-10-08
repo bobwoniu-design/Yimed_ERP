@@ -1,45 +1,29 @@
 {% set po = frappe.get_doc("JD Purchase Order", doc.purchase_order) %}
-{% set sku_display = doc.allocations[0].jd_sku if doc.sku_count == 1 else "混装" %}
+{% set skus = doc.allocations | selectattr("jd_sku") | map(attribute="jd_sku") | unique | list %}
 <style>
-/* Compensate for the Chrome PDF header/footer merge so the final label is 60 x 70 mm. */
-@page { size: 59.8mm 71mm; margin: 1.5mm; }
-html, body, .print-format { margin: 0 !important; padding: 0 !important; }
-.print-format { min-height: 0 !important; }
-.jd-label {
-  width: 56.8mm;
-  max-height: 68mm;
-  overflow: hidden;
-  page-break-inside: avoid;
-  break-inside: avoid;
-  font-family: "Microsoft YaHei", sans-serif;
-  color: #000;
-}
-.jd-label table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.jd-label tr { height: 7.4mm; }
-.jd-label tr:first-child { height: 8.6mm; }
-.jd-label th, .jd-label td {
-  border: 1px solid #000 !important;
-  padding: 0.45mm 0.6mm !important;
-  line-height: 1 !important;
-  vertical-align: middle !important;
-  word-break: break-all;
-}
-.jd-label th { width: 17mm; text-align: center; font-size: 7pt !important; font-weight: 500; }
-.jd-label td { text-align: center; font-size: 7.5pt !important; }
-.jd-label .title { font-size: 11.5pt !important; font-weight: 700; padding: 0.8mm 0.6mm !important; }
-.jd-label .sequence { font-size: 6.5pt !important; }
+@page { size: 100mm 80mm; margin: 1.5mm; }
+html, body, .print-format { margin:0 !important; padding:0 !important; }
+.print-format { min-height:0 !important; page-width:100mm; page-height:80mm; orientation:Portrait; margin-top:1.5mm; margin-bottom:1.5mm; margin-left:1.5mm; margin-right:1.5mm; }
+.jd-label { width:97mm; height:77mm; font-family:"Noto Sans CJK SC", "Microsoft YaHei",sans-serif; color:#000; break-inside:avoid; }
+.jd-label table { width:100%; height:100%; border-collapse:collapse; table-layout:fixed; }
+.jd-label tr { height:5.5mm; }
+.jd-label th, .jd-label td { border:0.3mm solid #000 !important; padding:0.4mm 1mm !important; line-height:1.15 !important; vertical-align:middle !important; word-break:break-word; text-align:center; }
+.jd-label th { width:21mm; font-size:10pt !important; font-weight:500; color:#000 !important; }
+.jd-label td { font-size:10pt !important; }
+.jd-label .title { font-size:14pt !important; }
+.jd-label .supplier, .jd-label .sequence { font-size:9.5pt !important; }
+.jd-label .address { height:9mm; text-align:left; font-size:{{ 8 if (po.jd_warehouse_address or "")|length > 80 else 9 }}pt !important; white-space:pre-line; overflow-wrap:anywhere; }
+.jd-label .skus { font-size:{{ 10 if skus|length <= 2 else 8.5 }}pt !important; overflow-wrap:anywhere; }
 </style>
-{# Chrome PDF otherwise injects legacy 15 mm top/bottom margins when no header/footer exists. #}
-<div id="header-html" style="height: 0; overflow: hidden;"></div>
-<div id="footer-html" style="height: 0; overflow: hidden;"></div>
-<div class="jd-label">
-  <table>
-    <tr><th></th><td class="title">TC送仓标签</td></tr>
-    <tr><th>供应商</th><td>{{ po.company }}</td></tr>
-    <tr><th>采购单号</th><td>{{ po.jd_purchase_order_no }}</td></tr>
-    <tr><th>目的城市</th><td>{{ po.destination_city or "" }}</td></tr>
-    <tr><th>SKU号</th><td>{{ sku_display }}</td></tr>
-    <tr><th>SKU数量</th><td>{{ doc.sku_count }}</td></tr>
-    <tr><th>箱序</th><td class="sequence">此采购单号第{{ doc.carton_sequence }}箱，共{{ doc.total_cartons }}箱</td></tr>
-  </table>
-</div>
+<div class="jd-label"><table><colgroup><col style="width:21mm"><col></colgroup>
+<tr><td colspan="2" class="title">TC送仓标签</td></tr>
+<tr><th>供应商</th><td class="supplier">{{ po.company | e }}</td></tr>
+<tr><th>采购单号</th><td>{{ (po.jd_purchase_order_no or po.name) | e }}</td></tr>
+<tr><th>目的城市</th><td>{{ (po.destination_city or "") | e }}</td></tr>
+<tr><th>收货负责人</th><td>{{ (po.contact_person or "") | e }}</td></tr>
+<tr><th>收货电话</th><td>{{ (po.contact_phone or "") | e }}</td></tr>
+<tr><th>库房地址</th><td class="address">{{ (po.jd_warehouse_address or "") | e }}</td></tr>
+<tr><th>SKU号</th><td class="skus">{{ skus | join("/") | e }}</td></tr>
+<tr><th>SKU数量</th><td>{{ skus | length }}</td></tr>
+<tr><th>箱序</th><td class="sequence">此采购单号第{{ doc.carton_sequence }}箱，共{{ doc.total_cartons }}箱</td></tr>
+</table></div>

@@ -21,9 +21,9 @@ SYNC_RESOURCE_ORDER = [
 ]
 
 DEFAULT_SYNC_INTERVALS = {
-    "Sales Order": 5,
-    "Delivery Note": 5,
-    "Sales Return": 5,
+    "Sales Order": 15,
+    "Delivery Note": 15,
+    "Sales Return": 15,
     "Purchase Receipt": 15,
     "Purchase Return": 30,
     "Stock Transfer": 30,
@@ -32,14 +32,19 @@ DEFAULT_SYNC_INTERVALS = {
     "Stocktake": 60,
 }
 
-SUPPORTED_SYNC_INTERVALS = {1, 5, 15, 30, 60, 360}
-INCREMENTAL_OVERLAP_MINUTES = 3
+SUPPORTED_SYNC_INTERVALS = {1, 5, 15, 30, 60, 360, 1440}
+INCREMENTAL_OVERLAP_MINUTES = 2
+
+# 日批模式：interval_minutes >= 1440 时，每天在 daily_run_time（默认 12:01）执行一次，
+# 同步窗口固定为前一日 00:00:00-23:59:59，游标推进到前一日末尾。
+DAILY_BATCH_INTERVAL = 1440
+DEFAULT_DAILY_RUN_TIME = "12:01:00"
 
 # 生产环境的推荐拉取频率。交易单据追求及时性；库存快照用于核对，主数据则无需频繁全量拉取。
 RECOMMENDED_PULL_INTERVALS = {
-    "Sales Order": 5,
-    "Delivery Note": 5,
-    "Sales Return": 5,
+    "Sales Order": 15,
+    "Delivery Note": 15,
+    "Sales Return": 15,
     "Purchase Order": 15,
     "Purchase Receipt": 15,
     "Inventory": 15,
@@ -155,6 +160,14 @@ def sync_resource(
 
     limit：测试用，限制处理的条数（None = 全量）。
     """
+    from channel_erp.integrations.jackyun import is_quota_circuit_open
+
+    if trigger_type == "scheduled" and is_quota_circuit_open():
+        frappe.logger("channel_erp.scheduler").info(
+            "JackYun sync skipped (quota circuit open) resource=%s", resource
+        )
+        return
+
     if resource == "Offline Customer" and not pull_kwargs:
         pull_kwargs = {"customer_sources": OFFLINE_CUSTOMER_SOURCES}
 
@@ -218,7 +231,11 @@ def sync_resource(
         if resource in incremental_resources:
             sync_since = frappe.db.get_value(
                 "Jackyun Sync Log",
-                {"connection": connection.name, "resource": resource, "status": "成功"},
+                {
+                    "connection": connection.name,
+                    "resource": resource,
+                    "status": ["in", ["成功", "部分失败"]],
+                },
                 "last_modified_at",
                 order_by="last_modified_at desc",
             )
@@ -230,7 +247,14 @@ def sync_resource(
                 sync_since,
                 resource_config.get("sync_start_at") if resource_config else None,
             )
-            sync_until = frappe.utils.now_datetime()
+            if _is_daily_batch(resource_config):
+                # 日批模式：窗口固定为前一日全天，避免把当天上午的数据提前拉进来。
+                yesterday = frappe.utils.add_to_date(frappe.utils.now_datetime(), days=-1)
+                sync_until = frappe.utils.get_datetime(
+                    yesterday.strftime("%Y-%m-%d") + " 23:59:59"
+                )
+            else:
+                sync_until = frappe.utils.now_datetime()
 
         request_from, request_to = _effective_request_window(
             request_since, sync_until, pull_kwargs
@@ -306,7 +330,14 @@ def sync_resource(
                     frappe.db.commit()
 
             sync_log.status = "成功" if not failed else ("部分失败" if (created + updated) else "失败")
-            if resource in incremental_resources and sync_log.status == "成功" and not truncated and advance_cursor:
+            # 部分失败也推进游标：失败记录已保存原始数据（Raw Record），由本地重试
+            # 通道兜底，避免游标卡死导致整个窗口被反复重拉、耗尽接口额度。
+            if (
+                resource in incremental_resources
+                and sync_log.status in ("成功", "部分失败")
+                and not truncated
+                and advance_cursor
+            ):
                 sync_log.last_modified_at = sync_until
         except Exception as exc:
             sync_log.status = "失败"
@@ -341,8 +372,8 @@ def sync_resource(
                 recovery = verify_and_recover_sync_run(sync_log.name, resource)
                 if recovery.get("failed"):
                     sync_log.status = "部分失败"
-                    sync_log.last_modified_at = None
-                    sync_log.cursor_end_at = sync_since
+                    # 游标保持已推进的位置：恢复失败的记录由本地 Raw Record
+                    # 重试通道处理，不再回退游标触发整窗口重拉。
                     sync_log.total_failed = frappe.utils.cint(sync_log.total_failed) + frappe.utils.cint(
                         recovery.get("failed")
                     )
@@ -373,6 +404,27 @@ def sync_resource(
             connection.last_sync_at = finished_at
             connection.save(ignore_permissions=True)
             frappe.db.commit()
+
+
+def _is_daily_batch(resource_config):
+    """Return whether the resource schedule runs as a once-a-day batch."""
+    if not resource_config:
+        return False
+    return frappe.utils.cint(resource_config.get("interval_minutes")) >= DAILY_BATCH_INTERVAL
+
+
+def _daily_slot_today(resource_config, now=None):
+    """Compute today's fixed run time for a daily batch schedule."""
+    now = now or frappe.utils.now_datetime()
+    run_time = (
+        resource_config.get("daily_run_time")
+        if resource_config
+        else None
+    ) or DEFAULT_DAILY_RUN_TIME
+    run_time_str = str(run_time)
+    if len(run_time_str) == 5:  # "12:01" -> "12:01:00"
+        run_time_str += ":00"
+    return frappe.utils.get_datetime(now.strftime("%Y-%m-%d") + " " + run_time_str)
 
 
 def _effective_request_window(sync_since, sync_until, pull_kwargs):
@@ -828,6 +880,15 @@ def process_due_schedules():
     """每分钟检查各连接的资源频率，到期后独立排队。"""
     finalize_abandoned_sync_logs()
     now = frappe.utils.now_datetime()
+    from channel_erp.integrations.jackyun import is_quota_circuit_open
+
+    quota_circuit_open = is_quota_circuit_open(now=now)
+    if quota_circuit_open:
+        frappe.logger("channel_erp.scheduler").info(
+            "JackYun scheduler skipped (quota circuit open until cooldown ends)"
+        )
+        frappe.db.commit()
+        return
     for row in frappe.get_all("Jackyun Connection", filters={"enabled": 1}, pluck="name"):
         connection = frappe.get_doc("Jackyun Connection", row)
         if not connection.sync_schedules:
@@ -843,17 +904,26 @@ def process_due_schedules():
                 continue
             interval = max(frappe.utils.cint(schedule.interval_minutes), 1)
             last = frappe.utils.get_datetime(schedule.last_enqueued_at) if schedule.last_enqueued_at else None
-            if last and frappe.utils.time_diff_in_seconds(now, last) < interval * 60:
-                continue
-            scheduled_for = (
-                frappe.utils.add_to_date(last, minutes=interval)
-                if last
-                else (
-                    frappe.utils.get_datetime(schedule.get("next_run_at"))
-                    if schedule.get("next_run_at")
-                    else now
+            if interval >= DAILY_BATCH_INTERVAL:
+                # 日批：每天在固定时刻执行一次，窗口为前一日全天。
+                slot = _daily_slot_today(schedule, now=now)
+                if now < slot:
+                    continue
+                if last and last >= slot:
+                    continue
+                scheduled_for = slot
+            else:
+                if last and frappe.utils.time_diff_in_seconds(now, last) < interval * 60:
+                    continue
+                scheduled_for = (
+                    frappe.utils.add_to_date(last, minutes=interval)
+                    if last
+                    else (
+                        frappe.utils.get_datetime(schedule.get("next_run_at"))
+                        if schedule.get("next_run_at")
+                        else now
+                    )
                 )
-            )
             delay_seconds = max(
                 0, frappe.utils.time_diff_in_seconds(now, scheduled_for)
             )
@@ -868,9 +938,14 @@ def process_due_schedules():
                 connection.name, schedule.resource, scheduled_for=scheduled_for
             ):
                 schedule.last_enqueued_at = now
-                schedule.next_run_at = frappe.utils.add_to_date(
-                    now, minutes=interval
-                )
+                if interval >= DAILY_BATCH_INTERVAL:
+                    schedule.next_run_at = frappe.utils.add_to_date(
+                        slot, days=1
+                    )
+                else:
+                    schedule.next_run_at = frappe.utils.add_to_date(
+                        now, minutes=interval
+                    )
                 changed = True
         if changed:
             connection.save(ignore_permissions=True)

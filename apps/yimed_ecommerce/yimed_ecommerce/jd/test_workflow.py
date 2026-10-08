@@ -5,7 +5,8 @@ from frappe.utils import add_days, generate_hash, nowdate
 from erpnext.stock.doctype.stock_entry.stock_entry_utils import make_stock_entry
 
 from yimed_ecommerce.jd.packing import create_equal_cartons, verify_cartons
-from yimed_ecommerce.jd.rework import clear_unverified_cartons
+from yimed_ecommerce.jd.packing import update_carton_totals
+from yimed_ecommerce.jd.rework import clear_unverified_cartons, undo_carton_verification
 from yimed_ecommerce.jd.test_product_bundle import make_item
 from yimed_ecommerce.jd.test_transfer import _get_two_warehouses
 from yimed_ecommerce.jd.transfer import validate_packing_complete
@@ -25,6 +26,22 @@ from yimed_ecommerce.yimed_ecommerce.doctype.jd_handover.jd_handover import crea
 
 
 class TestJDWorkflow(IntegrationTestCase):
+
+	def setUp(self):
+		super().setUp()
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
 	def test_successfully_imported_batch_cannot_create_cartons_before_stocking_and_sorting(self):
 		po, jd_sku, item, warehouse = _make_po("REAL-IMPORT-GATE", qty=2, stock_qty=2)
 		frappe.db.set_value("JD Purchase Import Batch", po.import_batch, "status", "导入成功", update_modified=False)
@@ -41,6 +58,30 @@ class TestJDWorkflow(IntegrationTestCase):
 		self.assertTrue(get_order_packing_gate(po.name)["can_pack"])
 		created = create_equal_cartons(po.name, jd_sku, 2, 2)
 		self.assertEqual(created["carton_count"], 1)
+
+	def _cleanup_leaked_test_data(self):
+		for doctype, field in [
+			("JD Purchase Order Item", "parent"),
+			("JD Carton Allocation", "parent"),
+			("JD Carton Item", "parent"),
+			("JD Carton", "purchase_order"),
+			("JD Purchase Order", "name"),
+			("JD SKU Mapping", "jd_sku"),
+			("JD Purchase Import Batch", "import_file"),
+		]:
+			frappe.db.delete(doctype, {field: ["like", "_TEST-JD%"]})
+			frappe.db.delete(doctype, {field: ["like", "_Test JD%"]})
+		frappe.db.delete("JD Purchase Import Batch", {"import_file": ["like", "/private/files/test-%"]})
+		frappe.db.commit()
+
+	def tearDown(self):
+		# 测试中 Stock Entry submit 会 commit 破坏事务回滚；
+		# setUp 只能清理上一轮残留，最后一个用例的数据靠 tearDown 兜底
+		try:
+			self._cleanup_leaked_test_data()
+		except Exception:
+			pass
+		super().tearDown()
 
 	def test_unverified_carton_freezes_stocking_and_sorting_until_rework_clears_it(self):
 		po, jd_sku, item, warehouse = _make_po("DOWNSTREAM-FREEZE", qty=2, stock_qty=2)
@@ -59,10 +100,14 @@ class TestJDWorkflow(IntegrationTestCase):
 			lambda: auto_sort(po.import_batch),
 			lambda: update_sorting(po.import_batch, sorting_rows),
 		):
-			with self.assertRaisesRegex(frappe.ValidationError, "Clear downstream cartons through the rework flow"):
+			with self.assertRaisesRegex(frappe.ValidationError, "已存在箱记录"):
 				action()
 
-		clear_unverified_cartons(po.name, "重做批次备货和分拣")
+		# 待装=0 即装箱完成（无独立确认环节）：取消装箱=受控撤销确认后删除箱记录
+		undo_carton_verification(po.name, "重做批次备货和分拣")
+		for carton_name in frappe.get_all("JD Carton", filters={"purchase_order": po.name}, pluck="name"):
+			frappe.delete_doc("JD Carton", carton_name, ignore_permissions=True)
+		update_carton_totals(po.name)
 		confirm_stocking(po.import_batch, stocking_rows)
 		auto_sort(po.import_batch)
 		pool = frappe.db.get_value("JD Stocking Pool Item", {"import_batch": po.import_batch}, "name")
@@ -215,7 +260,9 @@ class TestJDWorkflow(IntegrationTestCase):
 		confirmed = confirm_stocking(po.import_batch, [{"stock_item":item, "warehouse":warehouse, "batch_no":batch.name, "stocked_qty":2}])
 		self.assertEqual(confirmed["stocking_status"], "备货完成")
 		auto_sort(po.import_batch)
-		self.assertFalse(get_order_packing_gate(po.name)["can_pack"])
+		# 效期拦截已按业务要求取消（2026-09-23）：低效期批次是否可发由操作员自行判断，
+		# gate 不再因效期不足阻止装箱；FEFO 推荐与不符合标记保留提示能力
+		self.assertTrue(get_order_packing_gate(po.name)["can_pack"])
 		candidate = next(row for row in get_batch_candidates(item, warehouse) if row["batch_no"] == batch.name)
 		self.assertFalse(candidate["eligible"])
 

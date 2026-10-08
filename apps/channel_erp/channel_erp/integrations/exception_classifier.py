@@ -70,8 +70,20 @@ def classify_exception(error):
 
     if _matches(
         lowered,
+        r"不能链接到已取消|链接到已取消单据|已取消单据行|已取消.*订单|"
+        r"cancelled document|against.*cancelled",
+    ):
+        return _result(
+            "关联单据",
+            False,
+            "来源单据已在吉客云或ERPNext取消，业务上不可自愈；请人工确认是否需要手工建单，"
+            "无需重试。",
+        )
+
+    if _matches(
+        lowered,
         r"来源.*单|关联.*单|source.*order|against.*order|找不到.*原.*单|"
-        r"未找到.*订单|已取消单据|已取消.*订单|cancelled document",
+        r"未找到.*订单",
     ):
         return _result(
             "关联单据",

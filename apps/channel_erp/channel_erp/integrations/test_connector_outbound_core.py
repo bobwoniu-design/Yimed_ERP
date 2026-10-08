@@ -13,6 +13,7 @@ from channel_erp.integrations.connector_contracts import (
 )
 from channel_erp.integrations.connector_operations import (
     _dependency_decision,
+    _maybe_enqueue_auto_audit,
     build_idempotency_key,
     is_echo_source,
     probe_uncertain_outbound,
@@ -333,3 +334,84 @@ class TestConnectorOutboundCore(TestCase):
         )
         self.assertEqual("Uncertain", result.outcome)
         self.assertEqual("CTX-UNKNOWN", result.context_id)
+
+
+class TestAutoAuditChain(TestCase):
+    def _succeeded_create(self):
+        message = _message("Create", "Succeeded")
+        message.external_id = "JY-1"
+        message.payload = '{"tradeOrder": {"onlineTradeNo": "SO-1"}}'
+        return message
+
+    def _settings(self, **overrides):
+        value = frappe._dict(
+            credential_doctype="Jackyun Connection",
+            credential_name="JY-CONN",
+            auto_audit_outbound=1,
+            audit_operator="operator-a",
+            outbound_test_mode=0,
+        )
+        value.update(overrides)
+        return value
+
+    def test_audit_enqueued_after_create_success(self):
+        message = self._succeeded_create()
+        with (
+            patch.object(frappe.db, "get_value", return_value=self._settings()),
+            patch.object(frappe.db, "exists", return_value=False),
+            patch(
+                "channel_erp.integrations.connector_operations.enqueue_outbound_internal"
+            ) as enqueue,
+        ):
+            _maybe_enqueue_auto_audit(message)
+        enqueue.assert_called_once()
+        kwargs = enqueue.call_args.kwargs
+        self.assertEqual("Sales Order", kwargs["resource"])
+        self.assertEqual("Audit", kwargs["operation"])
+        self.assertEqual("JY-1", kwargs["external_id"])
+        self.assertEqual({"tradeNos": ["JY-1"], "operator": "operator-a"}, kwargs["payload"])
+        self.assertEqual("AUTO-AUDIT:JY-1", kwargs["operation_identity"])
+        self.assertEqual("OUT-1", kwargs["origin_message"])
+
+    def test_audit_skipped_when_disabled_or_test_mode(self):
+        for settings in (
+            self._settings(auto_audit_outbound=0),
+            self._settings(outbound_test_mode=1),
+        ):
+            message = self._succeeded_create()
+            with (
+                patch.object(frappe.db, "get_value", return_value=settings),
+                patch(
+                    "channel_erp.integrations.connector_operations.enqueue_outbound_internal"
+                ) as enqueue,
+            ):
+                _maybe_enqueue_auto_audit(message)
+            enqueue.assert_not_called()
+
+    def test_audit_skipped_for_erptest_or_non_success_messages(self):
+        erptest = self._succeeded_create()
+        erptest.payload = '{"tradeOrder": {"onlineTradeNo": "ERPTEST-20260928-SO-1"}}'
+        pending = _message("Create", "Pending")
+        cancel = _message("Cancel", "Succeeded")
+        for message in (erptest, pending, cancel):
+            message.external_id = "JY-1"
+            with (
+                patch.object(frappe.db, "get_value", return_value=self._settings()),
+                patch(
+                    "channel_erp.integrations.connector_operations.enqueue_outbound_internal"
+                ) as enqueue,
+            ):
+                _maybe_enqueue_auto_audit(message)
+            enqueue.assert_not_called()
+
+    def test_audit_skipped_when_trade_already_cancelled(self):
+        message = self._succeeded_create()
+        with (
+            patch.object(frappe.db, "get_value", return_value=self._settings()),
+            patch.object(frappe.db, "exists", return_value=True),
+            patch(
+                "channel_erp.integrations.connector_operations.enqueue_outbound_internal"
+            ) as enqueue,
+        ):
+            _maybe_enqueue_auto_audit(message)
+        enqueue.assert_not_called()
