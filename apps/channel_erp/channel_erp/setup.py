@@ -156,11 +156,12 @@ def ensure_custom_fields():
                     "fieldname": "custom_jackyun_source_trade_no",
                     "label": "网店订单号",
                     "fieldtype": "Data",
+                    "length": 1000,
                     "insert_after": "custom_jackyun_trade_no",
                     "read_only": 1,
                     "in_list_view": 1,
                     "in_standard_filter": 1,
-                    "description": "平台/网店订单号；吉客云来源字段 onlineTradeNo",
+                    "description": "平台/网店订单号；吉客云来源字段 onlineTradeNo，多子单时逗号拼接",
                 },
                 {
                     "fieldname": "custom_jackyun_order_time",

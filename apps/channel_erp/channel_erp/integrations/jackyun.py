@@ -2736,6 +2736,26 @@ class JackYunAdapter(BaseAdapter):
             company = frappe.db.get_value("Warehouse", warehouse, "company")
             if company and frappe.db.exists("Company", company):
                 return company
+        # 早期平台店铺订单可能不带公司字段且无法定位仓库。吉客云店铺主体固定
+        # 归属连接配置的首个公司编码，以此兜底而不是丢弃订单。
+        fallback_code = frappe.utils.cstr(
+            (self.connection.get("company_codes") or "").split(",")[0]
+        ).strip()
+        if fallback_code:
+            fallback = frappe.db.get_value(
+                "External ID Mapping",
+                {"platform": "jackyun", "resource": "Company", "external_id": fallback_code},
+                "erpnext_name",
+            )
+            if fallback and frappe.db.exists("Company", fallback):
+                frappe.logger("channel_erp.integrations").warning(
+                    "Sales Order %s has no company/warehouse hint;"
+                    " falling back to company code %s (%s)",
+                    mapped.get("trade_no") or mapped.get("external_id"),
+                    fallback_code,
+                    fallback,
+                )
+                return fallback
         frappe.throw(
             f"销售单 {mapped.get('trade_no') or mapped.get('external_id')} 的公司 "
             f"{company_name or '未知'} 尚未同步，且无法从仓库确定公司"
