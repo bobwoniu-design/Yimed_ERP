@@ -3904,6 +3904,19 @@ class JackYunAdapter(BaseAdapter):
                 self.remember_mapping("Delivery Note", external_id, "Delivery Note", existing_dn[0])
                 return existing_dn[0], "skipped"
         customer = self._resolve_delivery_customer(values, source_sales_order)
+        # 吉客云允许先发货后取消订单（售后退款等流程）。ERPNext 禁止出库单关联
+        # 已取消的销售订单，故降级为独立出库单：库存移动仍然权威，与下方
+        # OverAllowanceError 独立重试策略一致。
+        if source_sales_order and (
+            frappe.db.get_value("Sales Order", source_sales_order, "docstatus") == 2
+        ):
+            frappe.logger("channel_erp.integrations").warning(
+                "JackYun Delivery Note %s: Sales Order %s is cancelled;"
+                " importing as standalone delivery note",
+                values.get("delivery_no") or external_id,
+                source_sales_order,
+            )
+            source_sales_order = None
         source_rates = {}
         source_rows = {}
         if source_sales_order:
