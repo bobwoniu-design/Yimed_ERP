@@ -261,11 +261,15 @@ function jd_preview_inject_styles() {
 		.jd-preview-content::-webkit-scrollbar-thumb, .layout-main-section .result::-webkit-scrollbar-thumb { background:#c8cdd3; border-radius:4px; }
 		.jd-preview-content::-webkit-scrollbar-thumb:hover, .layout-main-section .result::-webkit-scrollbar-thumb:hover { background:#a8aeb5; }
 		.jd-preview-content, .layout-main-section .result { scrollbar-width:thin; scrollbar-color:#c8cdd3 transparent; }
-		/* 列宽收紧：编号列定宽可省略，数字列允许收缩，按钮列始终钉在视口内 */
+	`);
+	/* 列宽收紧：脚本加载即注入（不依赖点击行为），编号列定宽、数字列收缩、按钮列钉在视口内 */
+	frappe.dom.set_style(`
+		.page-flex .layout-main-section table, .layout-main-section table { table-layout: fixed; }
 		.list-row .list-subject, .list-item .list-subject { flex: 0 0 220px !important; min-width: 0 !important; max-width: 220px !important; }
 		.list-row .list-subject a, .list-item .list-subject a { display: inline-block; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
-		.list-row .list-row-col, .list-item .list-row-col { min-width: 0 !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+		.list-row .list-row-col, .list-item .list-row-col { min-width: 0 !important; max-width: 90px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 		.list-row .level-right, .list-item .level-right { flex: 0 0 auto !important; margin-left: auto !important; }
+		.list-item .list-row-col span, .list-row .list-row-col span { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
 	`);
 }
 
