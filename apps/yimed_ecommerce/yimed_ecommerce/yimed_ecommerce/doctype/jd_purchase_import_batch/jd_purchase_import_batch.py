@@ -2,6 +2,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
+from frappe.utils import flt
 
 from yimed_ecommerce.jd.import_purchase_orders import import_purchase_orders
 
@@ -41,6 +42,23 @@ class JDPurchaseImportBatch(Document):
 				purchase_order,
 				ignore_permissions=True,
 			)
+
+
+def update_report_shortage_count(import_batch: str) -> int:
+	"""统计批次内回告数量低于采购数量的采购单数，写入批次列表汇总字段。
+
+	触发时机：确认/取消批次备货（workflow）与采购单保存（JD Purchase Order.on_update）。
+	"""
+	count = frappe.db.sql(
+		"select count(name) from `tabJD Purchase Order` "
+		"where import_batch=%s and report_qty < total_purchase_qty - 0.000001",
+		import_batch,
+	)[0][0]
+	if frappe.db.exists("JD Purchase Import Batch", import_batch):
+		frappe.db.set_value(
+			"JD Purchase Import Batch", import_batch, "report_shortage_orders", flt(count), update_modified=False
+		)
+	return flt(count)
 
 
 @frappe.whitelist()

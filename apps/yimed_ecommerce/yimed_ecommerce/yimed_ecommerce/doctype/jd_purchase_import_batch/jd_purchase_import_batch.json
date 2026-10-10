@@ -18,7 +18,7 @@
   {"default": "0", "fieldname": "item_row_count", "fieldtype": "Int", "in_list_view": 1, "label": "商品明细数", "read_only": 1, "width": "60px"},
   {"default": "0", "fieldname": "success_count", "fieldtype": "Int", "in_list_view": 1, "label": "成功", "read_only": 1, "width": "60px"},
   {"default": "0", "fieldname": "failed_count", "fieldtype": "Int", "in_list_view": 1, "label": "失败", "read_only": 1, "width": "60px"},
-  {"default": "0", "fieldname": "report_shortage_orders", "fieldtype": "Int", "in_list_view": 1, "in_standard_filter": 1, "label": "回告短缺单数", "read_only": 1, "width": "60px"},
+  {"default": "0", "fieldname": "report_shortage_orders", "fieldtype": "Int", "in_list_view": 1, "in_standard_filter": 1, "label": "回告短缺", "read_only": 1, "width": "60px"},
   {"fieldname": "error_log", "fieldtype": "Long Text", "label": "错误明细", "read_only": 1}
  ],
  "links": [{"link_doctype": "JD Purchase Order", "link_fieldname": "import_batch"}],
