@@ -56,7 +56,7 @@ class JDBatchStockPage {
 			const $host = this.$root.find(`[data-filter='${fieldname}']`);
 			const control = frappe.ui.form.make_control({
 				parent: $host, render_input: true,
-				df: { fieldtype: "Link", options, label, placeholder: label, filters: fieldname === "company" ? undefined : () => this.link_filters(fieldname) },
+				df: { fieldtype: "Link", options, placeholder: label, filters: fieldname === "company" ? undefined : () => this.link_filters(fieldname) },
 			});
 			this.filters[fieldname] = control;
 		};
