@@ -1,0 +1,161 @@
+{
+ "actions": [],
+ "autoname": "format:{item_code}~{warehouse_code}~{batch_no}",
+ "creation": "2026-10-10 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "warehouse_code",
+  "warehouse",
+  "jackyun_warehouse_name",
+  "batch_no",
+  "column_break_1",
+  "quantity",
+  "locked_quantity",
+  "available_quantity",
+  "quantity_id",
+  "snapshot_at",
+  "column_break_2",
+  "production_date",
+  "expiry_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "\u5546\u54c1\u7f16\u7801",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "\u5546\u54c1\u540d\u79f0",
+   "read_only": 1
+  },
+  {
+   "fieldname": "warehouse_code",
+   "fieldtype": "Data",
+   "label": "\u4ed3\u5e93\u7f16\u7801",
+   "read_only": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "\u4ed3\u5e93",
+   "options": "Warehouse",
+   "read_only": 1
+  },
+  {
+   "fieldname": "jackyun_warehouse_name",
+   "fieldtype": "Data",
+   "label": "\u5409\u5ba2\u4e91\u4ed3\u5e93\u540d",
+   "read_only": 1
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "\u6279\u6b21\u53f7",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "\u5269\u4f59\u6570\u91cf",
+   "read_only": 1
+  },
+  {
+   "fieldname": "locked_quantity",
+   "fieldtype": "Float",
+   "label": "\u9501\u5b9a\u6570\u91cf",
+   "read_only": 1
+  },
+  {
+   "fieldname": "available_quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "\u53ef\u7528\u6570\u91cf",
+   "read_only": 1
+  },
+  {
+   "fieldname": "quantity_id",
+   "fieldtype": "Data",
+   "label": "\u5e93\u5b58\u884cID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "snapshot_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "\u5feb\u7167\u65f6\u95f4",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "production_date",
+   "fieldtype": "Date",
+   "label": "\u751f\u4ea7\u65e5\u671f",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "\u5931\u6548\u65e5\u671f",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "is_virtual": 0,
+ "links": [],
+ "modified": "2026-10-10 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Jackyun Integration",
+ "name": "Jackyun Batch Inventory",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "role": "Stock User"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "role": "Stock Manager"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

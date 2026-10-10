@@ -194,6 +194,12 @@ scheduler_events = {
 		"30 2 * * *": [
 			"channel_erp.content_center.run_content_center_maintenance",
 		],
+		"40 2 * * *": [
+			"channel_erp.jackyun_integration.doctype.jackyun_batch_inventory.jackyun_batch_inventory.refresh_snapshot_full",
+		],
+		"*/10 * * * *": [
+			"channel_erp.jackyun_integration.doctype.jackyun_batch_inventory.jackyun_batch_inventory.refresh_snapshot_tick",
+		],
 		"15 3 * * *": [
 			"channel_erp.jackyun_integration.doctype.jackyun_raw_record.jackyun_raw_record.scheduled_cleanup_duplicate_snapshots",
 		],
