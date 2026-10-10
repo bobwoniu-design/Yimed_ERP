@@ -1,6 +1,6 @@
 const JD_IMPORT_READY_STATUSES = ["导入成功", "部分失败"];
 const JD_IMPORT_WORKBOOK_METHOD = "yimed_ecommerce.jd.import_workbooks";
-window.__jdListJsVersion = "v20260924-5";
+window.__jdListJsVersion = "v20261010-1";
 
 function download_jd_import_template() {
 	open_url_post(frappe.request.url, {
@@ -261,6 +261,11 @@ function jd_preview_inject_styles() {
 		.jd-preview-content::-webkit-scrollbar-thumb, .layout-main-section .result::-webkit-scrollbar-thumb { background:#c8cdd3; border-radius:4px; }
 		.jd-preview-content::-webkit-scrollbar-thumb:hover, .layout-main-section .result::-webkit-scrollbar-thumb:hover { background:#a8aeb5; }
 		.jd-preview-content, .layout-main-section .result { scrollbar-width:thin; scrollbar-color:#c8cdd3 transparent; }
+		/* 列宽收紧：编号列定宽可省略，数字列允许收缩，按钮列始终钉在视口内 */
+		.list-row .list-subject, .list-item .list-subject { flex: 0 0 220px !important; min-width: 0 !important; max-width: 220px !important; }
+		.list-row .list-subject a, .list-item .list-subject a { display: inline-block; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+		.list-row .list-row-col, .list-item .list-row-col { min-width: 0 !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+		.list-row .level-right, .list-item .level-right { flex: 0 0 auto !important; margin-left: auto !important; }
 	`);
 }
 
@@ -374,6 +379,16 @@ function jd_preview_render(batch_name, row) {
 		: "";
 
 	if (jd_preview_state.tab === "orders") {
+		const report_cell = (o) => {
+			const purchase = Number(o.total_purchase_qty || 0);
+			const report = Number(o.report_qty ?? purchase);
+			if (Math.abs(report - purchase) > 1e-9) {
+				return `<td class="text-right text-danger" title="${frappe.utils.escape_html(
+					__("回告数量 {0} 与采购数量 {1} 不一致", [report, purchase])
+				)}">${report}</td>`;
+			}
+			return `<td class="text-right">${report}</td>`;
+		};
 		const order_rows = data.orders.length
 			? data.orders
 					.map(
@@ -384,12 +399,13 @@ function jd_preview_render(batch_name, row) {
 							<td>${frappe.utils.escape_html(o.destination_city || "—")}</td>
 							<td>${frappe.utils.escape_html(o.jd_warehouse || "—")}</td>
 							<td class="text-right">${o.total_purchase_qty}</td>
+							${report_cell(o)}
 						</tr>`
 					)
 					.join("")
-			: `<tr><td colspan="6" class="text-muted text-center">${__("本批次没有采购单")}</td></tr>`;
+			: `<tr><td colspan="7" class="text-muted text-center">${__("本批次没有采购单")}</td></tr>`;
 		content.innerHTML = `<table class="table table-bordered" style="margin:0;">
-			<thead><tr><th>${__("采购单")}</th><th>${__("映射状态")}</th><th>${__("状态")}</th><th>${__("目的城市")}</th><th>${__("京东仓")}</th><th class="text-right">${__("采购数量")}</th></tr></thead>
+			<thead><tr><th>${__("采购单")}</th><th>${__("映射状态")}</th><th>${__("状态")}</th><th>${__("目的城市")}</th><th>${__("京东仓")}</th><th class="text-right">${__("采购数量")}</th><th class="text-right">${__("回告数量")}</th></tr></thead>
 			<tbody>${order_rows}</tbody></table>`;
 		return;
 	}
